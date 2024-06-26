@@ -13,9 +13,9 @@ import GroupIcon from '@mui/icons-material/Group';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
-function Sidebar() {
-  const [open, setOpen] = useState(false); 
-  const [overflow, setOverflow] = useState('hidden');
+const Sidebar = () => {
+  const [open, setOpen] = useState<boolean>(false); 
+  const [overflow, setOverflow] = useState<string>('hidden');
 
   useEffect(() => {
     if (open) {
@@ -59,7 +59,6 @@ function Sidebar() {
             {open && <ListItemText primary="Community" />}
           </ListItemButton>
         </List>
-        {/* Box to push Profile and Sign Out to the bottom */}
         <Box sx={{ mt: 'auto', width: '100%' }}>
           <List>
             <ListItemButton>
@@ -78,5 +77,3 @@ function Sidebar() {
 }
 
 export default Sidebar;
-
-
