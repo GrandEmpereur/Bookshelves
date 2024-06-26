@@ -1,10 +1,10 @@
 import React from 'react';
-import Sidebar from '../components/Sidebar';
+import FeedPage from '@/app/feed/page';
 
 function App() {
   return (
     <div className="App">
-      <Sidebar />
+      <FeedPage />
     </div>
   );
 }
