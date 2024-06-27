@@ -1,105 +1,122 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Card, CardContent, CardActions, Typography, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Grid, Avatar, Fab, createTheme, CssBaseline, ThemeProvider, createMuiTheme } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {
+    Container, Card, CardContent, CardActions, Typography, Button, TextField,
+    Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Grid, Avatar,
+    Fab, createTheme, CssBaseline, ThemeProvider, List, ListItem, ListItemAvatar, ListItemText, ListItemSecondaryAction
+} from '@mui/material';
+import {
+    Delete as DeleteIcon, Add as AddIcon, Edit as EditIcon, Favorite as FavoriteIcon,
+    Share as ShareIcon, ChatBubbleOutline as ChatBubbleOutlineIcon, CloudUpload as CloudUploadIcon
+} from '@mui/icons-material';
 
 const apiUrl = 'https://bookish.empereur.me/api';
 const token = 'oat_MTQ.X1NqclZidGdPRXBZSENFR3dMOGhldDJ5V1o2aEJna0s2MTAzQzVvMjM1MTU5MTk4NTM';
-const userId = 'f8860545-2e10-49a6-9a64-398eeec3f3dc';
-
 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const theme = createTheme({
     palette: {
-      background: {
-        default: '#ffffff'
-      },
-      primary: {
-        main: '#cccccc',
-      },
-      secondary: {
-        main: '#e0e0e0',
-      },
+        background: {
+            default: '#f4f6f8'
+        },
+        primary: {
+            main: '#005ea2',
+        },
+        secondary: {
+            main: '#d32f2f',
+        },
+        info: {
+            main: '#0288d1'
+        }
     },
     typography: {
-      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-      h6: {
-        fontWeight: 500,
-        fontSize: '1.25rem',
-      },
-      body1: {
-        fontWeight: 400,
-        color: '#757575',
-      },
+        fontFamily: 'Arial, sans-serif',
+        fontSize: 14,
+        button: {
+            textTransform: 'none'
+        }
     },
     components: {
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            boxShadow: 'none',
-            border: '1px solid #eeeeee',
-            borderRadius: '10px',
-            marginBottom: '16px',
-          },
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    boxShadow: '0 4px 20px 0 rgba(0,0,0,0.1)',
+                    border: 'none',
+                    borderRadius: '8px',
+                },
+            },
         },
-      },
-      MuiFab: {
-        styleOverrides: {
-          root: {
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-            backgroundColor: '#f44336',
-            color: 'white',
-          },
+        MuiFab: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#005ea2',
+                    color: 'white',
+                    '&:hover': {
+                        backgroundColor: '#004175',
+                    },
+                },
+            },
         },
-      },
     },
-  });
-  
+});
+
+interface User {
+    userId: string;
+    username: string;
+    profilePicture: string;
+}
+
+interface Comment {
+    commentId: string;
+    content: string;
+    user: User;
+}
+
+interface Feed {
+    feedId: string;
+    title: string;
+    content: string;
+    user: User;
+    likeCount: number;
+    isLiked: boolean;
+    comments: Comment[];
+}
+
 const FeedPage = () => {
-    const [feeds, setFeeds] = useState<{ 
-        feedId: string, 
-        title: string, 
-        content: string,
-        user: {
-            userId: string,
-            username: string,
-            profilePicture: string
-        }
-      }[]>([]);
+    const [feeds, setFeeds] = useState<Feed[]>([]);
+    const [currentFeed, setCurrentFeed] = useState<Feed | null>(null);
+    const [showFeedDialog, setShowFeedDialog] = useState(false);
+    const [showCommentDialog, setShowCommentDialog] = useState(false);
+    const [newComment, setNewComment] = useState('');
+    const [newPost, setNewPost] = useState({ title: '', content: '', image: null as File | null });
     const [error, setError] = useState('');
-    const [currentFeed, setCurrentFeed] = useState<{ feedId: string, title: string, content: string, user: { userId: string, username: string, profilePicture: string } } | null>(null);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [isNewPostOpen, setIsNewPostOpen] = useState(false);
-    const [newPost, setNewPost] = useState({ title: '', content: '', userId: userId, image: null as File | null });
 
     useEffect(() => {
-        const fetchFeeds = async () => {
-            try {
-                const response = await axios.get(`${apiUrl}/feeds`);
-                setFeeds(response.data);
-            } catch (err) {
-                setError('Erreur lors de la récupération des publications');
-            }
-        };
-
         fetchFeeds();
     }, []);
+
+    const fetchFeeds = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/feeds`);
+            const feeds: Feed[] = response.data.map((feed: Feed) => ({
+                ...feed,
+                isLiked: false,
+                likeCount: feed.likeCount || 0,
+                comments: feed.comments || []
+            }));
+            setFeeds(feeds);
+        } catch (err) {
+            setError('Error retrieving posts');
+        }
+    };
 
     const fetchFeedById = async (feedId: string) => {
         try {
             const response = await axios.get(`${apiUrl}/feed/${feedId}`);
             setCurrentFeed(response.data);
-            setIsPopupOpen(true);
+            setShowFeedDialog(true);
         } catch (err) {
             setError('Erreur lors de la récupération de la publication');
         }
@@ -114,25 +131,41 @@ const FeedPage = () => {
         }
     };
 
-    const handleNewPostChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setNewPost({ ...newPost, [e.target.name]: e.target.value });
-    };
-
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setNewPost({ ...newPost, image: e.target.files[0] });
+    const handleFeedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (currentFeed) {
+            setCurrentFeed({ ...currentFeed, [e.target.name]: e.target.value });
         }
     };
 
-    const createNewPost = async () => {
+    const saveFeed = async () => {
+        if (!currentFeed) return;
+        try {
+            const { feedId, title, content } = currentFeed;
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('content', content);
+            if (newPost.image) {
+                formData.append('image', newPost.image);
+            }
+            const response = await axios.put(`${apiUrl}/feed/${feedId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            setFeeds(feeds.map(feed => (feed.feedId === feedId ? { ...response.data, comments: feed.comments, likeCount: feed.likeCount, isLiked: feed.isLiked } : feed)));
+            setShowFeedDialog(false);
+        } catch (err) {
+            setError('Error saving the feed');
+        }
+    };
+
+    const createNewFeed = async () => {
         const formData = new FormData();
         formData.append('title', newPost.title);
         formData.append('content', newPost.content);
-        formData.append('userId', newPost.userId);
         if (newPost.image) {
             formData.append('image', newPost.image);
         }
-
         try {
             const response = await axios.post(`${apiUrl}/feed`, formData, {
                 headers: {
@@ -140,176 +173,309 @@ const FeedPage = () => {
                 }
             });
             setFeeds([...feeds, response.data]);
-            setIsNewPostOpen(false);
-            setNewPost({ title: '', content: '', userId: userId, image: null }); 
+            setShowFeedDialog(false);
+            setNewPost({ title: '', content: '', image: null });
         } catch (err) {
-            setError('Erreur lors de la création de la publication');
+            setError('Error creating the feed');
         }
     };
 
-    const updateFeed = async () => {
-        if (currentFeed) {
-            try {
-                await axios.put(`${apiUrl}/feed/${currentFeed.feedId}`, currentFeed);
-                setFeeds(feeds.map(feed => (feed.feedId === currentFeed.feedId ? currentFeed : feed)));
-                setIsPopupOpen(false);
-                setCurrentFeed(null);
-            } catch (err) {
-                setError('Erreur lors de la mise à jour de la publication');
-            }
+    const likePost = async (feedId: string) => {
+        try {
+            await axios.post(`${apiUrl}/feeds/${feedId}/likes`);
+            setFeeds(feeds.map(feed => {
+                if (feed.feedId === feedId) {
+                    return {
+                        ...feed,
+                        isLiked: true,
+                        likeCount: feed.likeCount + 1
+                    };
+                }
+                return feed;
+            }));
+        } catch (err) {
+            setError('Could not like post');
         }
     };
 
-    const handleCurrentFeedChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        if (currentFeed) {
-            setCurrentFeed({ ...currentFeed, [e.target.name]: e.target.value });
+    const unlikePost = async (feedId: string) => {
+        try {
+            await axios.delete(`${apiUrl}/feeds/${feedId}/likes`);
+            setFeeds(feeds.map(feed => {
+                if (feed.feedId === feedId) {
+                    return {
+                        ...feed,
+                        isLiked: false,
+                        likeCount: feed.likeCount - 1
+                    };
+                }
+                return feed;
+            }));
+        } catch (err) {
+            setError('Could not unlike post');
         }
+    };
+
+    const fetchComments = async (feedId: string) => {
+        try {
+            const response = await axios.get(`${apiUrl}/feeds/${feedId}/comments`);
+            setFeeds(feeds.map(feed => {
+                if (feed.feedId === feedId) {
+                    return { ...feed, comments: response.data };
+                }
+                return feed;
+            }));
+        } catch (err) {
+            setError('Could not fetch comments');
+        }
+    };
+
+    const addComment = async (feedId: string, content: string) => {
+        try {
+            const response = await axios.post(`${apiUrl}/feeds/${feedId}/comments`, { content });
+            setFeeds(feeds.map(feed => {
+                if (feed.feedId === feedId) {
+                    return { ...feed, comments: [...feed.comments, response.data] };
+                }
+                return feed;
+            }));
+            setNewComment('');
+            setShowCommentDialog(false);
+        } catch (err) {
+            setError('Could not add comment');
+        }
+    };
+
+    const deleteComment = async (feedId: string, commentId: string) => {
+        console.log(`Deleting comment with ID: ${commentId} from feed with ID: ${feedId}`);
+        try {
+            await axios.delete(`${apiUrl}/feeds/${feedId}/comments/${commentId}`);
+            setFeeds(feeds.map(feed => {
+                if (feed.feedId === feedId) {
+                    return {
+                        ...feed,
+                        comments: feed.comments.filter(comment => comment.commentId !== commentId)
+                    };
+                }
+                return feed;
+            }));
+        } catch (err) {
+            setError('Could not delete comment');
+        }
+    };
+    
+
+    const openNewFeedDialog = () => {
+        setCurrentFeed(null);
+        setNewPost({ title: '', content: '', image: null });
+        setShowFeedDialog(true);
+    };
+
+    const handleNewPostChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setNewPost({ ...newPost, [e.target.name]: e.target.value });
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setNewPost({ ...newPost, image: e.target.files[0] });
+        }
+    };
+
+    const handleCommentInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNewComment(event.target.value);
+    };
+
+    const openCommentDialog = (feed: Feed) => {
+        setCurrentFeed(feed);
+        setShowCommentDialog(true);
     };
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-        <Container>
-            <Typography variant="h4" component="h1" gutterBottom>
-                Liste des Publications
-            </Typography>
-            {error && <Typography color="error">{error}</Typography>}
-            <Grid container spacing={3}>
-                {feeds.map(feed => (
-                    <Grid item xs={12} key={feed.feedId}>
-                        <Card>
-                            <CardContent>
-                                <Grid container alignItems="center">
-                                    <Avatar src={feed.user.profilePicture} />
-                                    <Grid item xs>
-                                        <Typography variant="h6" style={{ marginLeft: '10px' }}>
-                                            {feed.user.username}
-                                        </Typography>
+            <Container>
+                <Typography variant="h4" component="h1" gutterBottom>
+                    Liste des Publications
+                </Typography>
+                {error && <Typography color="error">{error}</Typography>}
+                <Grid container spacing={3}>
+                    {feeds.map(feed => (
+                        <Grid item xs={12} key={feed.feedId}>
+                            <Card>
+                                <CardContent>
+                                    <Grid container alignItems="center">
+                                        <Avatar src={feed.user.profilePicture} />
+                                        <Grid item xs>
+                                            <Typography variant="h6" style={{ marginLeft: '10px' }}>
+                                                {feed.user.username}
+                                            </Typography>
+                                        </Grid>
+                                        <IconButton color="primary" onClick={() => fetchFeedById(feed.feedId)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton color="secondary" onClick={() => deleteFeed(feed.feedId)}>
+                                            <DeleteIcon />
+                                        </IconButton>
                                     </Grid>
-                                    <IconButton color="primary" onClick={() => fetchFeedById(feed.feedId)}>
-                                        <EditIcon />
+                                    <Typography variant="h5" component="h2" style={{ cursor: 'pointer', marginTop: '10px' }} onClick={() => fetchComments(feed.feedId)}>
+                                        {feed.title}
+                                    </Typography>
+                                    <Typography variant="body2" component="p">
+                                        {feed.content}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <IconButton aria-label="Like" onClick={() => feed.isLiked ? unlikePost(feed.feedId) : likePost(feed.feedId)}>
+                                        <FavoriteIcon color={feed.isLiked ? "error" : "inherit"} />
+                                        <Typography variant="caption">{feed.likeCount}</Typography>
                                     </IconButton>
-                                    <IconButton color="secondary" onClick={() => deleteFeed(feed.feedId)}>
-                                        <DeleteIcon />
+                                    <IconButton aria-label="comment" onClick={() => openCommentDialog(feed)}>
+                                        <ChatBubbleOutlineIcon />
                                     </IconButton>
-                                </Grid>
-                                <Typography variant="h5" component="h2" style={{ cursor: 'pointer', marginTop: '10px' }}>
-                                    {feed.title}
-                                </Typography>
-                                <Typography variant="body2" component="p">
-                                    {feed.content}
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <IconButton aria-label="add to favorites">
-                                    <FavoriteIcon />
-                                </IconButton>
-                                <IconButton aria-label="share">
-                                    <ShareIcon />
-                                </IconButton>
-                                <IconButton aria-label="comment">
-                                    <ChatBubbleOutlineIcon />
-                                </IconButton>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+                                </CardActions>
+                                <List>
+    {feed.comments.map(comment => (
+        <ListItem key={comment.commentId}>
+            <ListItemAvatar>
+                <Avatar src={comment.user.profilePicture} />
+            </ListItemAvatar>
+            <ListItemText primary={comment.user.username} secondary={comment.content} />
+            <ListItemSecondaryAction>
+                <IconButton edge="end" aria-label="delete" onClick={() => deleteComment(feed.feedId, comment.commentId)}>
+                    <DeleteIcon />
+                </IconButton>
+            </ListItemSecondaryAction>
+        </ListItem>
+    ))}
+</List>
 
-            <Fab color="primary" aria-label="add" style={{ position: 'fixed', bottom: 16, right: 16 }} onClick={() => setIsNewPostOpen(true)}>
-                <AddIcon />
-            </Fab>
-
-            <Dialog open={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-                <DialogTitle>Modifier la Publication</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Title"
-                        type="text"
-                        fullWidth
-                        name="title"
-                        value={currentFeed?.title || ''}
-                        onChange={handleCurrentFeedChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Content"
-                        type="text"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        name="content"
-                        value={currentFeed?.content || ''}
-                        onChange={handleCurrentFeedChange}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setIsPopupOpen(false)} color="secondary">
-                        Annuler
-                    </Button>
-                    <Button onClick={updateFeed} color="primary">
-                        Sauvegarder
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-            <Dialog open={isNewPostOpen} onClose={() => setIsNewPostOpen(false)}>
-                <DialogTitle>Nouveau Post</DialogTitle>
-                <DialogContent>
-                    <Grid container alignItems="center" spacing={2}>
-                        <Grid item>
-                            <Avatar src="https://api.adorable.io/avatars/285/f8860545-2e10-49a6-9a64-398eeec3f3dc.png" />
+                            </Card>
                         </Grid>
-                        <Grid item>
-                            <Typography variant="body1">Leonardo</Typography>
-                            <Typography variant="body2" color="textSecondary">16h</Typography>
-                        </Grid>
-                    </Grid>
-                    <TextField
-                        margin="dense"
-                        label="Titre"
-                        type="text"
-                        fullWidth
-                        name="title"
-                        value={newPost.title}
-                        onChange={handleNewPostChange}
-                        style={{ marginTop: '16px' }}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Contenu"
-                        type="text"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        name="content"
-                        value={newPost.content}
-                        onChange={handleNewPostChange}
-                        style={{ marginTop: '16px' }}
-                    />
-                    <div style={{ marginTop: '16px', border: '1px dashed #ccc', padding: '16px', textAlign: 'center' }}>
-                        <CloudUploadIcon style={{ fontSize: '48px', color: '#ccc' }} />
-                        <Typography variant="body2">Glisser et déposer une image ici</Typography>
-                        <Typography variant="body2">ou</Typography>
-                        <Button variant="contained" component="label">
-                            Importer
-                            <input type="file" hidden onChange={handleImageChange} />
+                    ))}
+                </Grid>
+
+                <Fab color="primary" aria-label="add" style={{ position: 'fixed', bottom: 16, right: 16 }} onClick={openNewFeedDialog}>
+                    <AddIcon />
+                </Fab>
+
+                {!currentFeed && (
+                    <Dialog open={showFeedDialog} onClose={() => setShowFeedDialog(false)}>
+                        <DialogTitle>New Feed</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label="Title"
+                                type="text"
+                                fullWidth
+                                name="title"
+                                value={newPost.title}
+                                onChange={handleNewPostChange}
+                            />
+                            <TextField
+                                margin="dense"
+                                label="Content"
+                                type="text"
+                                fullWidth
+                                multiline
+                                rows={4}
+                                name="content"
+                                value={newPost.content}
+                                onChange={handleNewPostChange}
+                            />
+                            <div style={{ marginTop: '16px', border: '1px dashed #ccc', padding: '16px', textAlign: 'center' }}>
+                                <CloudUploadIcon style={{ fontSize: '48px', color: '#ccc' }} />
+                                <Typography variant="body2">Drag and drop an image here</Typography>
+                                <Typography variant="body2">or</Typography>
+                                <Button variant="contained" component="label">
+                                    Upload
+                                    <input type="file" hidden onChange={handleImageChange} />
+                                </Button>
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setShowFeedDialog(false)} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={createNewFeed} color="primary">
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                )}
+
+                {currentFeed && (
+                    <Dialog open={showFeedDialog} onClose={() => setShowFeedDialog(false)}>
+                        <DialogTitle>Edit Feed</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label="Title"
+                                type="text"
+                                fullWidth
+                                name="title"
+                                value={currentFeed.title}
+                                onChange={handleFeedChange}
+                            />
+                            <TextField
+                                margin="dense"
+                                label="Content"
+                                type="text"
+                                fullWidth
+                                multiline
+                                rows={4}
+                                name="content"
+                                value={currentFeed.content}
+                                onChange={handleFeedChange}
+                            />
+                            <div style={{ marginTop: '16px', border: '1px dashed #ccc', padding: '16px', textAlign: 'center' }}>
+                                <CloudUploadIcon style={{ fontSize: '48px', color: '#ccc' }} />
+                                <Typography variant="body2">Drag and drop an image here</Typography>
+                                <Typography variant="body2">or</Typography>
+                                <Button variant="contained" component="label">
+                                    Upload
+                                    <input type="file" hidden onChange={handleImageChange} />
+                                </Button>
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setShowFeedDialog(false)} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={saveFeed} color="primary">
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                )}
+
+
+                <Dialog open={showCommentDialog} onClose={() => setShowCommentDialog(false)}>
+                    <DialogTitle>Add a Comment</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Comment"
+                            type="text"
+                            fullWidth
+                            value={newComment}
+                            onChange={handleCommentInputChange}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setShowCommentDialog(false)} color="primary">
+                            Cancel
                         </Button>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setIsNewPostOpen(false)} color="secondary">
-                        Annuler
-                    </Button>
-                    <Button onClick={createNewPost} color="primary">
-                        Poster
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Container>
-         </ThemeProvider>
+                        <Button onClick={() => addComment(currentFeed?.feedId || '', newComment)} color="primary">
+                            Submit
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+            </Container>
+        </ThemeProvider>
     );
 };
 
