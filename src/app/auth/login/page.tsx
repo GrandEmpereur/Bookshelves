@@ -12,17 +12,22 @@ import {
 
 function Login() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null); 
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     setError(null);
 
-    const email = event.target.elements.email.value;
-    const password = event.target.elements.password.value;
+    // const email = event.target.elements.email.value;
+    // const password = event.target.elements.password.value;
+
+    const form = event.currentTarget;
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+
 
     try {
       const response = await axios.post(

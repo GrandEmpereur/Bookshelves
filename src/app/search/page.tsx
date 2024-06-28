@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { TextField, Avatar, Card, CardMedia, Typography, Grid } from '@mui/material';
 
 interface User {
@@ -36,7 +36,8 @@ const SearchPage: React.FC = () => {
                 setFilteredUsers(response.data);
                 setIsLoading(false);
             } catch (error) {
-                console.error('Erreur lors de la récupération des utilisateurs :', error.response.data);
+                const axiosError = error as AxiosError;
+                console.error('Erreur lors de la récupération des utilisateurs :', axiosError.response?.data);
                 setIsLoading(false);
             }
         };
@@ -52,7 +53,8 @@ const SearchPage: React.FC = () => {
                 });
                 setBooks(response.data.map((book: any) => ({ statId: book.statId, bookTitle: book.bookTitle })));
             } catch (error) {
-                console.error('Erreur lors de la récupération des livres :', error.response.data);
+                const axiosError = error as AxiosError;
+                console.error('Erreur lors de la récupération des livres :', axiosError.response?.data);
             }
         };
 
@@ -74,7 +76,8 @@ const SearchPage: React.FC = () => {
             });
             setFilteredUsers(response.data);
         } catch (error) {
-            console.error('Erreur lors de la récupération des utilisateurs :', error.response.data);
+            const axiosError = error as AxiosError;
+            console.error('Erreur lors de la récupération des utilisateurs :', axiosError.response?.data);
         }
     };
 

@@ -15,9 +15,9 @@ import {
 import axios from "axios";
 
 function App() {
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | Error | null>(null);
 
   const [username, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -53,7 +53,7 @@ function App() {
       .put(
         "https://bookish.empereur.me/api/user/profile",
         {
-          name,
+          name: username,
           email,
           bio,
         },
@@ -87,10 +87,11 @@ function App() {
   }
 
   if (error) {
+    const errorMessage = typeof error === "string" ? error : error.message;
     return (
       <Container>
         <Typography variant="h6" color="error">
-          Erreur de chargement du profil: {error.message}
+          Erreur de chargement du profil: {errorMessage}
         </Typography>
       </Container>
     );

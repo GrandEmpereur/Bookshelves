@@ -16,13 +16,19 @@ function Register() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const onSubmit = async (event) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
-    const username = event.target.elements.username.value;
-    const email = event.target.elements.email.value;
-    const password = event.target.elements.password.value;
+    // const username = event.target.elements.username.value;
+    // const email = event.target.elements.email.value;
+    // const password = event.target.elements.password.value;
+
+    const form = event.currentTarget;
+    const username = (form.elements.namedItem('usernae') as HTMLInputElement).value;
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+    
 
     try {
       const response = await axios.post(
