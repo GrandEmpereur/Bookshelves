@@ -136,9 +136,6 @@ function Page() {
 				<a href="#texte" className="block py-2 font-bold">Texte</a>
 				<a href="#boutons" className="block py-2 font-bold">Boutons</a>
 				<a href="#inputs" className="block py-2 font-bold">Input</a>
-				<a href="#articles-images" className="block py-2 font-bold">Articles / Images</a>
-				<a href="#espacements" className="block py-2 font-bold">Espacements</a>
-				<a href="#typographie" className="block py-2 font-bold">Typographie</a>
 			</aside>
 			<main className="flex-1 p-8 space-y-16">
 				<div className="text-4xl font-bold mb-8">Design System</div>
