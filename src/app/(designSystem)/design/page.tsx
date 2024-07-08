@@ -25,6 +25,7 @@ import { Switch } from "@/components/ui/switch";
 
 // Form components
 import { InputForm } from "@/components/form";
+import Link from "next/link";
 
 const colors = [
 	{ name: 'Primary', className: 'bg-primary', description: 'Titres, CTA, hovers, fonds, pictos, contours', hex: '#2D4D43' },
@@ -125,33 +126,36 @@ const colorVariants = [
 ];
 
 function Page() {
-	const [date, setDate] = React.useState<Date>()
-	const [date2, setDate2] = React.useState<Date | undefined>(new Date())
+	const [date, setDate] = React.useState<Date>();
+	const [date2, setDate2] = React.useState<Date | undefined>(new Date());
 
 	return (
-		<div className="flex">
-			<aside className="bg-black text-white w-48 p-4 space-y-4 sticky top-0 h-screen">
+		<div className="flex flex-col md:flex-row">
+			<aside className="bg-black text-white w-full md:w-48 p-4 space-y-4 sticky top-0 h-auto md:h-screen">
 				<a href="#couleur" className="block py-2 font-bold">Couleur</a>
 				<a href="#variantes" className="block py-2 font-bold">Variantes</a>
 				<a href="#texte" className="block py-2 font-bold">Texte</a>
 				<a href="#boutons" className="block py-2 font-bold">Boutons</a>
 				<a href="#inputs" className="block py-2 font-bold">Input</a>
+				<Link href="/">
+					<span>go back</span>
+				</Link>
 			</aside>
-			<main className="flex-1 p-8 space-y-16">
+			<main className="flex-1 p-4 md:p-8 space-y-8 md:space-y-16">
 				<div className="text-4xl font-bold mb-8">Design System</div>
 
 				<section className="scroll-mt-16" id="couleur">
 					<Card>
 						<CardHeader>
-							<CardTitle className="font-heading text-5xl">Couleurs</CardTitle>
+							<CardTitle className="font-heading text-2xl md:text-5xl">Couleurs</CardTitle>
 							<CardDescription>Palette de couleurs utilisées dans le design system</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<div className="grid grid-cols-3 gap-4 mb-8 p-4 bg-white shadow rounded-lg">
+							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8 p-4 bg-white shadow rounded-lg">
 								{colors.map((color, index) => (
 									<div key={index} className="flex flex-col items-center space-y-2 text-center">
-										<div className={`w-16 h-16 rounded-full border ${color.className}`}></div>
-										<span className="text-sm font-semibold">{color.name}</span>
+										<div className={`w-12 h-12 md:w-16 md:h-16 rounded-full border ${color.className}`}></div>
+										<span className="text-xs md:text-sm font-semibold">{color.name}</span>
 										{color.description && <span className="text-xs text-gray-500">{color.description}</span>}
 										<span className="text-xs font-mono">{color.hex}</span>
 									</div>
@@ -164,21 +168,21 @@ function Page() {
 				<section className="scroll-mt-16" id="variantes">
 					<Card>
 						<CardHeader>
-							<CardTitle className="font-heading text-5xl">Variantes de Couleurs</CardTitle>
+							<CardTitle className="font-heading text-2xl md:text-5xl">Variantes de Couleurs</CardTitle>
 							<CardDescription>Variantes des couleurs utilisées dans le design system</CardDescription>
 						</CardHeader>
 						<CardContent>
 							{colorVariants.map((colorGroup, index) => (
 								<div key={index} className="mb-8">
-									<div className="text-3xl font-semibold mb-4">{colorGroup.name}</div>
-									<div className="grid grid-cols-3 gap-4">
+									<div className="text-xl md:text-3xl font-semibold mb-4">{colorGroup.name}</div>
+									<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
 										{colorGroup.variants.map((variant, idx) => (
 											<div key={idx} className="flex flex-col items-center space-y-2 text-center">
 												<div
-													className={`w-24 h-24 rounded-lg border ${variant.className}`}
+													className={`w-20 h-20 md:w-24 md:h-24 rounded-lg border ${variant.className}`}
 													style={{ backgroundColor: variant.hex }}
 												></div>
-												<span className="text-sm font-semibold">{variant.name}</span>
+												<span className="text-xs md:text-sm font-semibold">{variant.name}</span>
 												<span className="text-xs font-mono">{variant.hex}</span>
 												<span className="text-xs text-gray-500">{`.${variant.className}`}</span>
 											</div>
@@ -193,17 +197,17 @@ function Page() {
 				<section className="scroll-mt-16" id="texte">
 					<Card>
 						<CardHeader>
-							<CardTitle className="font-heading text-5xl">Textes</CardTitle>
+							<CardTitle className="font-heading text-2xl md:text-5xl">Textes</CardTitle>
 							<CardDescription>Styles de texte utilisés dans le design system</CardDescription>
 						</CardHeader>
 						<CardContent>
 							<div className="mb-8">
-								<div className="text-5xl font-bold font-neuton mb-4">TITRE 1 - NEUTON</div>
-								<div className="text-4xl font-bold font-neuton mb-4">TITRE 2 - NEUTON</div>
-								<div className="text-3xl font-bold font-neuton mb-4">TITRE 3 - NEUTON</div>
-								<div className="text-2xl font-bold font-neuton mb-4">TITRE 4 - NEUTON</div>
-								<div className="text-xl font-bold font-neuton mb-4">TITRE 5 - NEUTON</div>
-								<div className="text-base font-normal font-poppins leading-6">
+								<div className="text-2xl md:text-5xl font-bold font-neuton mb-4">TITRE 1 - NEUTON</div>
+								<div className="text-xl md:text-4xl font-bold font-neuton mb-4">TITRE 2 - NEUTON</div>
+								<div className="text-lg md:text-3xl font-bold font-neuton mb-4">TITRE 3 - NEUTON</div>
+								<div className="text-base md:text-2xl font-bold font-neuton mb-4">TITRE 4 - NEUTON</div>
+								<div className="text-sm md:text-xl font-bold font-neuton mb-4">TITRE 5 - NEUTON</div>
+								<div className="text-sm md:text-base font-normal font-poppins leading-6">
 									Texte courant - Poppins Regular
 								</div>
 							</div>
@@ -214,43 +218,43 @@ function Page() {
 				<section className="scroll-mt-16" id="boutons">
 					<Card>
 						<CardHeader>
-							<CardTitle className="font-heading text-5xl">Buttons</CardTitle>
+							<CardTitle className="font-heading text-2xl md:text-5xl">Buttons</CardTitle>
 							<CardDescription>Exemples de boutons utilisés dans le design system</CardDescription>
 						</CardHeader>
 						<CardContent>
 							<div className="mb-8">
-								<div className="text-2xl font-bold mb-4">Default Buttons</div>
-								<div className="flex flex-wrap gap-4">
+								<div className="text-xl md:text-2xl font-bold mb-4">Default Buttons</div>
+								<div className="flex flex-wrap gap-2 md:gap-4">
 									<Button variant="default">Découvrir</Button>
 									<Button variant="default" className="blur-sm">Découvrir</Button>
 									<Button variant="default" disabled>Découvrir</Button>
 									<Button variant="default" className="flex items-center">
-										<Eye className="mr-2 h-4 w-4" /> Découvrir
+										<Eye className="mr-1 md:mr-2 h-4 w-4" /> Découvrir
 									</Button>
 									<Button variant="default" className="rounded-full flex items-center p-2">
 										<ChevronLeft className="h-4 w-4" />
 									</Button>
 									<Button variant="default" className="flex items-center">
-										<Plus className="mr-2 h-4 w-4" /> Ajouter
+										<Plus className="mr-1 md:mr-2 h-4 w-4" /> Ajouter
 									</Button>
 									<Button variant="default" className="flex items-center">
-										<Search className="mr-2 h-4 w-4" /> Rechercher
+										<Search className="mr-1 md:mr-2 h-4 w-4" /> Rechercher
 									</Button>
 									<Button variant="default" className="flex items-center">
-										<Bell className="mr-2 h-4 w-4" /> Notifications
+										<Bell className="mr-1 md:mr-2 h-4 w-4" /> Notifications
 									</Button>
 									<Button variant="default" className="flex items-center">
-										<Loader className="mr-2 h-4 w-4 animate-spin" /> Loading
+										<Loader className="mr-1 md:mr-2 h-4 w-4 animate-spin" /> Loading
 									</Button>
 								</div>
 							</div>
 							<div className="mb-8">
-								<div className="text-2xl font-bold mb-4">Small Buttons</div>
-								<div className="flex flex-wrap gap-4">
+								<div className="text-xl md:text-2xl font-bold mb-4">Small Buttons</div>
+								<div className="flex flex-wrap gap-2 md:gap-4">
 									<Button variant="default" size="sm">Découvrir</Button>
 									<Button variant="default" size="sm" disabled>Découvrir</Button>
 									<Button variant="default" size="sm" className="flex items-center">
-										<Eye className="mr-2 h-3 w-3" /> Découvrir
+										<Eye className="mr-1 md:mr-2 h-3 w-3" /> Découvrir
 									</Button>
 									<Button variant="default" size="sm" className="rounded-full flex items-center p-2">
 										<ChevronLeft className="h-3 w-3" />
@@ -258,12 +262,12 @@ function Page() {
 								</div>
 							</div>
 							<div className="mb-8">
-								<div className="text-2xl font-bold mb-4">Large Buttons</div>
-								<div className="flex flex-wrap gap-4">
+								<div className="text-xl md:text-2xl font-bold mb-4">Large Buttons</div>
+								<div className="flex flex-wrap gap-2 md:gap-4">
 									<Button variant="default" size="lg">Découvrir</Button>
 									<Button variant="default" size="lg" disabled>Découvrir</Button>
 									<Button variant="default" size="lg" className="flex items-center">
-										<Eye className="mr-2 h-5 w-5" /> Découvrir
+										<Eye className="mr-1 md:mr-2 h-5 w-5" /> Découvrir
 									</Button>
 									<Button variant="default" size="lg" className="rounded-full flex items-center p-2">
 										<ChevronLeft className="h-5 w-5" />
@@ -271,54 +275,54 @@ function Page() {
 								</div>
 							</div>
 							<div className="mb-8">
-								<div className="text-2xl font-bold mb-4">Secondary Buttons</div>
-								<div className="flex flex-wrap gap-4">
+								<div className="text-xl md:text-2xl font-bold mb-4">Secondary Buttons</div>
+								<div className="flex flex-wrap gap-2 md:gap-4">
 									<Button variant="secondary">Découvrir</Button>
 									<Button variant="secondary" className="blur-sm">Découvrir</Button>
 									<Button variant="secondary" disabled>Découvrir</Button>
 									<Button variant="secondary" className="flex items-center">
-										<Eye className="mr-2 h-4 w-4" /> Découvrir
+										<Eye className="mr-1 md:mr-2 h-4 w-4" /> Découvrir
 									</Button>
 									<Button variant="secondary" className="rounded-full flex items-center p-2">
 										<ChevronLeft className="h-4 w-4" />
 									</Button>
 									<Button variant="secondary" className="flex items-center">
-										<Plus className="mr-2 h-4 w-4" /> Ajouter
+										<Plus className="mr-1 md:mr-2 h-4 w-4" /> Ajouter
 									</Button>
 									<Button variant="secondary" className="flex items-center">
-										<Search className="mr-2 h-4 w-4" /> Rechercher
+										<Search className="mr-1 md:mr-2 h-4 w-4" /> Rechercher
 									</Button>
 									<Button variant="secondary" className="flex items-center">
-										<Bell className="mr-2 h-4 w-4" /> Notifications
+										<Bell className="mr-1 md:mr-2 h-4 w-4" /> Notifications
 									</Button>
 									<Button variant="secondary" className="flex items-center">
-										<Loader className="mr-2 h-4 w-4 animate-spin" /> Loading
+										<Loader className="mr-1 md:mr-2 h-4 w-4 animate-spin" /> Loading
 									</Button>
 								</div>
 							</div>
 							<div className="mb-8">
-								<div className="text-2xl font-bold mb-4">Outline Buttons</div>
-								<div className="flex flex-wrap gap-4">
+								<div className="text-xl md:text-2xl font-bold mb-4">Outline Buttons</div>
+								<div className="flex flex-wrap gap-2 md:gap-4">
 									<Button variant="outline">Découvrir</Button>
 									<Button variant="outline" className="blur-sm">Découvrir</Button>
 									<Button variant="outline" disabled>Découvrir</Button>
 									<Button variant="outline" className="flex items-center">
-										<Eye className="mr-2 h-4 w-4" /> Découvrir
+										<Eye className="mr-1 md:mr-2 h-4 w-4" /> Découvrir
 									</Button>
 									<Button variant="outline" className="rounded-full flex items-center p-2">
 										<ChevronLeft className="h-4 w-4" />
 									</Button>
 									<Button variant="outline" className="flex items-center">
-										<Plus className="mr-2 h-4 w-4" /> Ajouter
+										<Plus className="mr-1 md:mr-2 h-4 w-4" /> Ajouter
 									</Button>
 									<Button variant="outline" className="flex items-center">
-										<Search className="mr-2 h-4 w-4" /> Rechercher
+										<Search className="mr-1 md:mr-2 h-4 w-4" /> Rechercher
 									</Button>
 									<Button variant="outline" className="flex items-center">
-										<Bell className="mr-2 h-4 w-4" /> Notifications
+										<Bell className="mr-1 md:mr-2 h-4 w-4" /> Notifications
 									</Button>
 									<Button variant="outline" className="flex items-center">
-										<Loader className="mr-2 h-4 w-4 animate-spin" /> Loading
+										<Loader className="mr-1 md:mr-2 h-4 w-4 animate-spin" /> Loading
 									</Button>
 								</div>
 							</div>
@@ -331,7 +335,7 @@ function Page() {
 				<section className="scroll-mt-16" id="inputs">
 					<Card>
 						<CardHeader>
-							<CardTitle className="font-heading text-5xl">Inputs</CardTitle>
+							<CardTitle className="font-heading text-2xl md:text-5xl">Inputs</CardTitle>
 							<CardDescription>Composants d'entrée utilisés dans le design system</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -500,7 +504,7 @@ function Page() {
 
 								{/* From */}
 								<div className="space-y-4">
-								<InputForm />
+									<InputForm />
 								</div>
 							</div>
 						</CardContent>
@@ -512,5 +516,3 @@ function Page() {
 }
 
 export default Page;
-
-
