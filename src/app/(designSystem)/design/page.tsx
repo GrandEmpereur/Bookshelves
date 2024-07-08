@@ -1,53 +1,30 @@
 "use client"
-import * as React from "react"
-import { Button } from '@/components/ui/button';
+import * as React from "react";
+
+// Icons
 import { ChevronLeft, ChevronRight, Eye, Search, Bell, Plus, Loader } from 'lucide-react';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { CalendarIcon } from "@radix-ui/react-icons";
+
+// Utility functions
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+
+// Components UI
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
 
-import { CalendarIcon } from "@radix-ui/react-icons"
-import { format } from "date-fns"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover"
-
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select"
-
-
-import {
-	InputOTP,
-	InputOTPGroup,
-	InputOTPSeparator,
-	InputOTPSlot,
-} from "@/components/ui/input-otp"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Switch } from "@/components/ui/switch"
-
-
-
-
+// Form components
+import { InputForm } from "@/components/form";
 
 const colors = [
 	{ name: 'Primary', className: 'bg-primary', description: 'Titres, CTA, hovers, fonds, pictos, contours', hex: '#2D4D43' },
@@ -521,6 +498,12 @@ function Page() {
 											</InputOTPGroup>
 										</InputOTP>
 									</div>
+								</div>
+
+
+								{/* From */}
+								<div className="space-y-4">
+								<InputForm />
 								</div>
 							</div>
 						</CardContent>
