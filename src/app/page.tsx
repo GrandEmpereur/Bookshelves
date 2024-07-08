@@ -1,10 +1,10 @@
 import React from 'react';
-import FeedPage from '@/app/feed/page';
+import {InputForm} from '@/components/form';
 
 function App() {
   return (
     <div className="App">
-      <FeedPage />
+      <InputForm />
     </div>
   );
 }
