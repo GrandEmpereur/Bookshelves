@@ -7,7 +7,7 @@ import { TextField, Button, Typography, Grid, Card, CardContent, Dialog, DialogT
 import options from '../api';
 
 interface Community {
-    communityId: UUID;
+    communityId: string;
     name: string;
     description: string;
 }
