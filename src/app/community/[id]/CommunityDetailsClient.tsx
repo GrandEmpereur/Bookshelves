@@ -6,20 +6,20 @@ import { Typography, Card, CardContent, Grid, TextField, Button, Dialog, DialogT
 import options from '../../api';
 
 interface User {
-    userId: UUID;
+    userId: string;
     username: string;
     roles: string[];
 }
 
 interface Community {
-    communityId: UUID;
+    communityId: string;
     name: string;
     description: string;
     users: User[];
 }
 
 interface Feed {
-    feedId: UUID;
+    feedId: string;
     title: string;
     content: string;
     communityId: string;
