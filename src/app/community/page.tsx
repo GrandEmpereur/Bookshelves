@@ -1,17 +1,13 @@
-// app/community/page.tsx
-
 "use client";
 
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import { TextField, Button, Typography, Grid, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { TextField, Button, Typography, Grid, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import options from '../api';
 
 interface Community {
-    communityId: string;
+    communityId: UUID;
     name: string;
     description: string;
 }
@@ -21,9 +17,6 @@ const CommunityPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [newCommunity, setNewCommunity] = useState({ name: '', description: '' });
     const [showDialog, setShowDialog] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [currentCommunity, setCurrentCommunity] = useState<Community | null>(null);
-
 
     useEffect(() => {
         const fetchCommunities = async () => {
@@ -51,49 +44,26 @@ const CommunityPage: React.FC = () => {
 
     const handleAddCommunity = async (e: FormEvent) => {
         e.preventDefault();
-        if (isEditing && currentCommunity) {
-            handleUpdateCommunity(currentCommunity.communityId);
-        } else {
-            try {
-                const response = await axios.post('https://bookish.empereur.me/api/community', newCommunity, options);
-                setCommunities([...communities, response.data]);
-                setNewCommunity({ name: '', description: '' });
-                setShowDialog(false);
-            } catch (error: any) {
-                setError('Error adding the community');
-                console.error('Error adding the community:', error);
-            }
-        }
-    };
-
-    const handleEditCommunity = (community: Community) => {
-        setNewCommunity({ name: community.name, description: community.description });
-        setCurrentCommunity(community);
-        setIsEditing(true);
-        setShowDialog(true);
-    };
-
-    const handleUpdateCommunity = async (id: string) => {
         try {
-            const response = await axios.put(`https://bookish.empereur.me/api/community/${id}`, newCommunity, options);
-            setCommunities(communities.map(community => (community.communityId === id ? response.data : community)));
+            const communityData = {
+                name: newCommunity.name,
+                description: newCommunity.description
+            };
+            console.log('Sending community data:', communityData);
+
+            const response = await axios.post('https://bookish.empereur.me/api/community', communityData, options);
+            console.log('Response from server:', response.data);
+
+            setCommunities([...communities, response.data]);
             setNewCommunity({ name: '', description: '' });
             setShowDialog(false);
-            setIsEditing(false);
-            setCurrentCommunity(null);
         } catch (error: any) {
-            setError('Error updating the community');
-            console.error('Error updating the community:', error);
-        }
-    };
-
-    const handleDeleteCommunity = async (id: string) => {
-        try {
-            await axios.delete(`https://bookish.empereur.me/api/community/${id}`, options);
-            setCommunities(communities.filter(community => community.communityId !== id));
-        } catch (error: any) {
-            setError('Error deleting the community');
-            console.error('Error deleting the community:', error);
+            setError('Error adding the community');
+            if (error.response) {
+                console.error('Error adding the community:', error.response.data);
+            } else {
+                console.error('Error adding the community:', error.message);
+            }
         }
     };
 
@@ -112,23 +82,16 @@ const CommunityPage: React.FC = () => {
                                     </Typography>
                                 </Link>
                                 <Typography variant="body2">{community.description}</Typography>
-                                <IconButton onClick={() => handleEditCommunity(community)}>
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton onClick={() => handleDeleteCommunity(community.communityId)}>
-                                    <DeleteIcon />
-                                </IconButton>
                             </CardContent>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
             <Button variant="contained" color="primary" onClick={() => {
-                setIsEditing(false);
                 setShowDialog(true);
             }}>Add Community</Button>
             <Dialog open={showDialog} onClose={() => setShowDialog(false)}>
-                <DialogTitle>{isEditing ? 'Edit Community' : 'Add New Community'}</DialogTitle>
+                <DialogTitle>Add New Community</DialogTitle>
                 <DialogContent>
                     <form onSubmit={handleAddCommunity}>
                         <TextField
