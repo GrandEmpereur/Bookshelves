@@ -2,16 +2,27 @@
 
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
-import { Typography, Card, CardContent, Grid, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { Button } from '@/components/ui/button';
+import { Typography, Card, CardContent, Grid, TextField, Button } from '@mui/material';
 import options from '../../api';
 
-// INTERFACES
-import { Community } from '@/interfaces/community';
-import { User } from '@/interfaces/user';
-import { Feed } from '@/interfaces/feed';
-// END INTERFACES
+interface User {
+    userId: string;
+    username: string;
+}
 
+interface Community {
+    communityId: string;
+    name: string;
+    description: string;
+    users: User[];
+}
+
+interface Feed {
+    feedId: string;
+    title: string;
+    content: string;
+    communityId: string;
+}
 
 const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -198,7 +209,8 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
 
 
         <div className="container mx-auto px-4 py-8 flex flex-col gap-16">
-
+            <Typography variant="h3" component="h1" gutterBottom>{community.name}</Typography>
+            <Typography variant="body2">{community.description}</Typography>
             <Typography variant="h4" component="h2" gutterBottom>Users</Typography>
             <Grid container spacing={2}>
                 {community.users.map((user) => (
@@ -255,46 +267,6 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
                 />
                 <Button type="submit" variant="contained" color="primary">Add Feed</Button>
             </form>
-            <Dialog open={showDialog} onClose={() => setShowDialog(false)}>
-                <DialogTitle>Edit Community</DialogTitle>
-                <DialogContent>
-                    <form onSubmit={handleUpdateCommunity}>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            label="Name"
-                            type="text"
-                            fullWidth
-                            name="name"
-                            value={newCommunity.name}
-                            onChange={handleInputChange}
-                        />
-                        <TextField
-                            margin="dense"
-                            label="Description"
-                            type="text"
-                            fullWidth
-                            multiline
-                            rows={4}
-                            name="description"
-                            value={newCommunity.description}
-                            onChange={handleInputChange}
-                        />
-                        <DialogActions>
-                            <Button onClick={() => setShowDialog(false)} color="primary">
-                                Cancel
-                            </Button>
-                            <Button type="submit" color="primary">
-                                Save
-                            </Button>
-                        </DialogActions>
-                    </form>
-                </DialogContent>
-            </Dialog>
-            </div>
-            )}
-
-        </div>
         </div>
     );
 };
