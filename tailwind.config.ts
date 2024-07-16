@@ -55,6 +55,14 @@ const config: Config = {
           900: '#150905',
           1000: '#0a0403',
         },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          100: '#F9F1EB',
+          200: '#F1DDCD',
+          300: '#EED6C3',
+          400: '#E3BB9B',
+          500: '#D8A074',
+        },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
@@ -62,10 +70,6 @@ const config: Config = {
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
         },
         success: {
           DEFAULT: 'hsl(var(--success))',

@@ -3,8 +3,11 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import { TextField, Button, Typography, Grid, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { TextField, Typography, Grid, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import options from '../api';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+
 
 interface Community {
     communityId: string;
@@ -69,7 +72,11 @@ const CommunityPage: React.FC = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 flex flex-col gap-16">
-            <Typography variant="h3" component="h1" gutterBottom>Communities</Typography>
+            <div className='bg-accent text-primary-800 w-fit rounded-full py-1 px-2.5'>List</div>
+            <Button variant="outline">Découvrir</Button>
+            <Button variant="outlineActive">Découvrir</Button>
+
+            <CardTitle className="font-heading text-2xl md:text-5xl">Communities</CardTitle>
             {error && <Typography color="error">{error}</Typography>}
             <Grid container spacing={2}>
                 {communities.map((community) => (

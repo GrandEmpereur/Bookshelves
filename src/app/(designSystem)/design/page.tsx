@@ -72,6 +72,17 @@ const colorVariants = [
 		]
 	},
 	{
+		name: 'Accent',
+		variants: [
+			{ name: 'Accent', className: 'bg-accent', hex: '#FCF5EF' },
+			{ name: 'AccentVariant100', className: 'bg-accentVariant', hex: '#F9F1EB' },
+			{ name: 'AccentVariant200', className: 'bg-accentVariant100', hex: '#F1DDCD' },
+			{ name: 'AccentVariant300', className: 'bg-accentVariant200', hex: '#EED6C3' },
+			{ name: 'AccentVariant400', className: 'bg-accentVariant300', hex: '#E3BB9B' },
+			{ name: 'AccentVariant500', className: 'bg-accentVariant400', hex: '#D8A074' },
+		]
+	},
+	{
 		name: 'Muted',
 		variants: [
 			{ name: 'Muted100', className: 'bg-muted100', hex: '#f5f5f5' },
