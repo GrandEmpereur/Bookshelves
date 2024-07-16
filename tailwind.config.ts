@@ -70,6 +70,7 @@ const config: Config = {
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
+<<<<<<< HEAD
           100: '#f5f5f5',
           200: '#e5e5e5',
           300: '#d4d4d4',
@@ -79,6 +80,8 @@ const config: Config = {
           700: '#404040',
           800: '#262626',
           900: '#171717',
+=======
+>>>>>>> 702135d (Style)
         },
         success: {
           DEFAULT: 'hsl(var(--success))',
