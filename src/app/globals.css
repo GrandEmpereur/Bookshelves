@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'styles/tailwind.css';
+
 @layer base {
   :root {
     --background: 0 0% 98%;
@@ -48,8 +50,15 @@
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    /* --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%; */
+
+    --accent: 28 68% 96%;
+    --accent-100: #F1DDCD;
+    --accent-200: #F9F1EB;
+    --accent-300: #EED6C3;
+    --accent-400: #E3BB9B;
+    --accent-500: #D8A074;
 
     --success: 122 30% 50%;
     --success-100: #c7e1c8;

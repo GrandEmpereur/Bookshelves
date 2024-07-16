@@ -10,6 +10,10 @@ function App() {
       <Link href="/design">
         <span>About</span>
       </Link>
+
+      <Link href="/community">
+        <span>Community</span>
+      </Link>
     </div>
   );
 }
