@@ -16,5 +16,5 @@ export const registerSchema = z.object({
 export const createFeedSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
   content: z.string().min(1, { message: 'Content is required' }),
-  userId: z.string().uuid({ message: 'Invalid user ID' }),
+  user_id: z.string().uuid({ message: 'Invalid user ID' }),
 });

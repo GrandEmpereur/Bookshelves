@@ -1,13 +1,16 @@
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: 'https://bookish.empereur.me/',
-});
+import api from './api';
 
 interface ApiError {
   message: string;
   [key: string]: any;
 }
+interface LoginResponse {
+  token: string;
+  user_id: string;
+  username: string;
+  email: string;
+}
+
 
 export const register = async (username: string, email: string, password: string, role?: string) => {
   try {
@@ -20,13 +23,13 @@ export const register = async (username: string, email: string, password: string
 };
 
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string): Promise<LoginResponse> => {
   try {
-    const response = await api.post('/auth/login', { email, password });
+    const response = await api.post<LoginResponse>('/auth/login', { email, password });
     return response.data;
   } catch (error: unknown) {
-    const apiError = error as ApiError;
-    throw apiError;
+    const apiError = error as { response?: { data?: { message: string } } };
+    throw new Error(apiError.response?.data?.message || 'An error occurred during login');
   }
 };
 
@@ -97,4 +100,15 @@ export const resetPassword = async (userId: string, newPassword: string) => {
     throw apiError;
   }
 };
+
+export const fetchUserInfo = async () => {
+  try {
+    const response = await api.get('/auth/me');
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching user info:', err);
+    return null;
+  }
+};
+
 

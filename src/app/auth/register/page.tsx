@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { register, verifyEmail } from "../../../services/authentication";
 import { useRouter } from "next/navigation";
+import { z } from 'zod';
+import { registerSchema } from '@/services/validationSchema';
 
 const styles = {
   container_register: {
@@ -55,44 +57,53 @@ const Register = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
+      registerSchema.parse({ username, email, password, role });
+
       const response = await register(username, email, password, role);
       setMessage(response.message);
       setIsRegistered(true);
-      setError("");
-    } catch (error: unknown) {
-      const errorMessage =
-        (error as { response?: { data?: { message: string } } }).response?.data
-          ?.message || "An error occurred";
-      setError(errorMessage);
-      setMessage("");
+      setError('');
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setError(error.errors[0].message);
+      } else {
+        const errorMessage = (error as { response?: { data?: { message: string } } }).response?.data?.message || 'An error occurred';
+        setError(errorMessage);
+        setMessage('');
+      }
     }
   };
 
   const handleVerifyEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
+      registerSchema.pick({ email: true, verificationCode: true }).parse({ email, verificationCode });
+
       const response = await verifyEmail(email, verificationCode);
       setMessage(response.message);
-      setError("");
-      // Optionally redirect to login or inform the user of successful verification
-      router.push("/auth/login");
-    } catch (error: unknown) {
-      const errorMessage =
-        (error as { response?: { data?: { message: string } } }).response?.data
-          ?.message || "An error occurred";
-      setError(errorMessage);
+      setError('');
+      router.push('/auth/login');
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setError(error.errors[0].message);
+      } else {
+        const errorMessage = (error as { response?: { data?: { message: string } } }).response?.data?.message || 'An error occurred';
+        setError(errorMessage);
+      }
     }
   };
 
   return (
-    <div style={styles.container_form}>
+    <div style={{ ...styles.container_form, flexDirection: "column" as React.CSSProperties['flexDirection'] }}>
       <h1 style={styles.title_form}>Sign up now</h1>
       <p style={styles.sub_title}>Please fill the details and create account</p>
       {message && <p style={{ color: "green" }}>{message}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       {!isRegistered ? (
-        <form onSubmit={handleRegister} style={styles.container_register}>
+        <form onSubmit={handleRegister} style={{ ...styles.container_register, flexDirection: "column" as React.CSSProperties['flexDirection'] }}>
           <input
             style={styles.input_field}
             type="text"

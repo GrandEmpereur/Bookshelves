@@ -1,20 +1,37 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import withAuth from '@/components/withAuth';
+import { User } from '@/context/userContext';
+import { createFeedSchema } from '@/services/validationSchema';
+import {
+  Add as AddIcon,
+  ChatBubbleOutline as ChatBubbleOutlineIcon, CloudUpload as CloudUploadIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon, Favorite as FavoriteIcon
+} from '@mui/icons-material';
+import {
+  Avatar,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Container,
+  createTheme, CssBaseline,
+  Dialog, DialogActions, DialogContent, DialogTitle,
+  Fab,
+  Grid,
+  IconButton,
+  List, ListItem, ListItemAvatar,
+  ListItemSecondaryAction,
+  ListItemText,
+  TextField,
+  ThemeProvider,
+  Typography
+} from '@mui/material';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { z } from 'zod';
 import { useUser } from '../../context/userContext';
 import api from '../../services/api';
-import {
-  Container, Card, CardContent, CardActions, Typography, Button, TextField,
-  Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Grid, Avatar,
-  Fab, createTheme, CssBaseline, ThemeProvider, List, ListItem, ListItemAvatar, ListItemText, ListItemSecondaryAction
-} from '@mui/material';
-import {
-  Delete as DeleteIcon, Add as AddIcon, Edit as EditIcon, Favorite as FavoriteIcon,
-  ChatBubbleOutline as ChatBubbleOutlineIcon, CloudUpload as CloudUploadIcon
-} from '@mui/icons-material';
-import { User } from '@/context/userContext';
-import { z } from 'zod';
-import { createFeedSchema } from '@/services/validationSchema';
 
 const theme = createTheme({
   palette: {
@@ -128,16 +145,16 @@ const FeedPage = () => {
       setCurrentFeed(response.data);
       setShowFeedDialog(true);
     } catch (err) {
-      setError('Erreur lors de la récupération de la publication');
+      setError('Error retrieving the post');
     }
   };
 
   const deleteFeed = async (feedId: string) => {
     try {
-      await api.delete(`/feed/${feedId}`);
+      await api.delete(`api/feed/${feedId}`);
       setFeeds(feeds.filter(feed => feed.feedId !== feedId));
     } catch (err) {
-      setError('Erreur lors de la suppression de la publication');
+      setError('Error deleting the post');
     }
   };
 
@@ -155,40 +172,31 @@ const FeedPage = () => {
       setFeeds(feeds.map(feed => (feed.feedId === feedId ? { ...response.data, comments: feed.comments, likeCount: feed.likeCount, isLiked: feed.isLiked } : feed)));
       setShowFeedDialog(false);
     } catch (err) {
-      setError('Error saving the feed');
+      setError('Error saving the post');
     }
   };
 
-  const createNewFeed = async () => {
-    if (!user) {
-      setError('User not authenticated');
-      return;
-    }
-
-    const newFeed = {
-      title: newPost.title,
-      content: newPost.content,
-      userId: user.userId,
-    };
-
+  const createNewFeed = async (e: FormEvent) => {
+    e.preventDefault();
     try {
+      const newFeed = {
+        title: newPost.title,
+        content: newPost.content,
+        user_id: user?.userId
+      };
+  
       createFeedSchema.parse(newFeed);
+  
       const response = await api.post('api/feed', newFeed);
+  
       setFeeds([...feeds, response.data]);
-      setShowFeedDialog(false);
       setNewPost({ title: '', content: '' });
-    } catch (err: any) {
-      if (err instanceof z.ZodError) {
-        setError(err.errors[0].message);
-      } else if (err.response && err.response.data) {
-        console.error('Error creating feed:', err.response.data);
-        setError(err.response.data.message || 'Error creating the feed');
-      } else {
-        console.error('Error creating feed:', err);
-        setError('Error creating the feed');
-      }
+      setShowFeedDialog(false);
+    } catch (err) {
+      setError('Could not create new feed');
     }
   };
+  
 
   const likePost = async (feedId: string) => {
     try {
@@ -280,9 +288,10 @@ const FeedPage = () => {
     setShowFeedDialog(true);
   };
 
-  const handleNewPostChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNewPost({ ...newPost, [e.target.name]: e.target.value });
-  };
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewPost({ ...newPost, [name]: value });
+};
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -370,45 +379,38 @@ const FeedPage = () => {
           <Dialog open={showFeedDialog} onClose={() => setShowFeedDialog(false)}>
             <DialogTitle>New Feed</DialogTitle>
             <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                label="Title"
-                type="text"
-                fullWidth
-                name="title"
-                value={newPost.title}
-                onChange={handleNewPostChange}
-              />
-              <TextField
-                margin="dense"
-                label="Content"
-                type="text"
-                fullWidth
-                multiline
-                rows={4}
-                name="content"
-                value={newPost.content}
-                onChange={handleNewPostChange}
-              />
-              <div style={{ marginTop: '16px', border: '1px dashed #ccc', padding: '16px', textAlign: 'center' }}>
-                <CloudUploadIcon style={{ fontSize: '48px', color: '#ccc' }} />
-                <Typography variant="body2">Drag and drop an image here</Typography>
-                <Typography variant="body2">or</Typography>
-                <Button variant="contained" component="label">
-                  Upload
-                  <input type="file" hidden onChange={handleImageChange} />
-                </Button>
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setShowFeedDialog(false)} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={createNewFeed} color="primary">
-                Save
-              </Button>
-            </DialogActions>
+                    <form onSubmit={createNewFeed}>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Title"
+                            type="text"
+                            fullWidth
+                            name="title"
+                            value={newPost.title}
+                            onChange={handleInputChange}
+                        />
+                        <TextField
+                            margin="dense"
+                            label="Content"
+                            type="text"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            name="content"
+                            value={newPost.content}
+                            onChange={handleInputChange}
+                        />
+                        <DialogActions>
+                            <Button onClick={() => setShowFeedDialog(false)} color="primary">
+                                Cancel
+                            </Button>
+                            <Button type="submit" color="primary">
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </form>
+                </DialogContent>
           </Dialog>
         )}
 
@@ -486,4 +488,4 @@ const FeedPage = () => {
   );
 };
 
-export default FeedPage;
+export default withAuth(FeedPage);
