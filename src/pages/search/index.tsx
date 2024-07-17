@@ -104,7 +104,7 @@ const Search: React.FC = () => {
 
   return (
     <div>
-      <h1>Famous Authors</h1>
+      <h1>Search</h1>
       {error && <p style={{ color: 'red' }}>Erreur: {error}</p>}
       <input
         type="text"
@@ -113,6 +113,7 @@ const Search: React.FC = () => {
         onChange={handleSearch}
         style={{ width: '300px', padding: '10px', fontSize: '16px' }}
       />
+      <h2>Famous Authors</h2>
       <div className="authors-list">
         {filteredAuthors.map(author => (
           <div key={author.userId} className="author-card">
