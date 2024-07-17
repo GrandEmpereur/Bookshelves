@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -11,31 +11,31 @@ const onboardingScreens = [
         image: '/img/onboarding/step1.png',
         title: (
             <>
-                Life is short and the world is <span className="text-secondary">wide</span>
+                La vie est courte et le monde est <span className="text-secondary">vaste</span>
             </>
         ),
-        description: 'At Friends tours and travel, we customize reliable and trustworthy educational tours to destinations all over the world',
-        buttonText: 'Get Started',
+        description: 'Chez Bookish, nous personnalisons des voyages éducatifs fiables et dignes de confiance vers des destinations du monde entier',
+        buttonText: 'Commencer',
     },
     {
         image: '/img/onboarding/step2.png',
         title: (
             <>
-                It’s a big world out there go <span className="text-secondary">explore</span>
+                C’est un grand monde là-bas, allez <span className="text-secondary">explorer</span>
             </>
         ),
-        description: 'To get the best of your adventure you just need to leave and go where you like, we are waiting for you',
-        buttonText: 'Next',
+        description: 'Pour tirer le meilleur parti de votre aventure, il vous suffit de partir et d’aller où vous aimez, nous vous attendons',
+        buttonText: 'Suivant',
     },
     {
         image: '/img/onboarding/step3.png',
         title: (
             <>
-                People don’t take trips, trips take <span className="text-secondary">people</span>
+                Les gens ne prennent pas de voyages, les voyages prennent <span className="text-secondary">les gens</span>
             </>
         ),
-        description: 'To get the best of your adventure you just need to leave and go where you like, we are waiting for you',
-        buttonText: 'Next',
+        description: 'Pour tirer le meilleur parti de votre aventure, il vous suffit de partir et d’aller où vous aimez, nous vous attendons',
+        buttonText: 'Suivant',
     },
 ];
 
@@ -120,12 +120,12 @@ const OnboardingScreen: React.FC = () => {
             </div>
             <div ref={containerRef} className="flex flex-col items-center w-full max-w-md p-4 gap-y-6 pt-[440px]">
                 <div className="absolute top-12 right-12 w-full flex justify-end">
-                    <Button variant={'link'} className="text-sm" onClick={handleSkip}>Skip</Button>
+                    <Button variant={'link'} className="text-sm" onClick={handleSkip}>Passer</Button>
                 </div>
                 <h2 className="relative text-2xl font-bold text-center w-[309px]" ref={titleRef}>
                     {onboardingScreens[currentScreen].title}
                     {currentScreen === 0 && (
-                        <div className="absolute bottom-[-15px] right-[75px] justify-center mt-2">
+                        <div className="absolute bottom-[-15px] right-[60px] justify-center mt-2">
                             <Image src="/underline.svg" width={62.92} height={10.3} alt="Wide SVG" />
                         </div>
                     )}
@@ -134,13 +134,11 @@ const OnboardingScreen: React.FC = () => {
                     {onboardingScreens[currentScreen].description}
                 </p>
                 <div className="flex justify-center gap-x-2 mt-4">
-                    {[0, 1, 2].map((index) => (
+                    {onboardingScreens.map((_, index) => (
                         <div
                             key={index}
-                            ref={(el) => {
-                                dotRefs.current[index] = el;
-                            }}
-                            className={`w-${index === currentScreen ? '[35px]' : '[13px]'} h-[7px] rounded-full ${index === currentScreen ? 'bg-primary' : 'bg-primary-500'}`}
+                            ref={(el) => { dotRefs.current[index] = el; }}
+                            className={`h-[7px] rounded-full ${index === currentScreen ? 'w-[35px] bg-primary' : 'w-[13px] bg-primary-500'}`}
                         ></div>
                     ))}
                 </div>
