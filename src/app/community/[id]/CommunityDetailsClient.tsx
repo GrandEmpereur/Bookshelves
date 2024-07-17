@@ -2,28 +2,16 @@
 
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
-import { Typography, Card, CardContent, Grid, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Typography, Card, CardContent, Grid, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Button } from '@/components/ui/button';
 import options from '../../api';
 
-interface User {
-    userId: string;
-    username: string;
-    roles: string[];
-}
+// INTERFACES
+import { Community } from '@/interfaces/community';
+import { User } from '@/interfaces/user';
+import { Feed } from '@/interfaces/feed';
+// END INTERFACES
 
-interface Community {
-    communityId: string;
-    name: string;
-    description: string;
-    users: User[];
-}
-
-interface Feed {
-    feedId: string;
-    title: string;
-    content: string;
-    communityId: string;
-}
 
 const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -188,22 +176,28 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 flex flex-col gap-16">
-            <p>{community.communityId}</p>
-            <Typography variant="h3" component="h1" gutterBottom>{community.name}</Typography>
-            <Typography variant="body2">{community.description}</Typography>
-            {isOwner && (
-                <>
-                    <Button variant="contained" color="primary" onClick={handleEditClick}>Edit Community</Button>
-                    <Button variant="contained" color="secondary" onClick={handleDeleteCommunity}>Delete Community</Button>
-                </>
-            )}
+        <div>
 
-            {isMember ? (
-            <Button onClick={leaveCommunity}>Leave</Button>
-            ): (
-            <Button onClick={joinCommunity}>Join</Button>
-            )} 
+        <div className="relative w-full h-60 flex flex-col gap-4 py-10 px-4 bg-[url('/img/img_cate.png')] bg-cover bg-center">
+            <div className="absolute inset-0 bg-white opacity-50 "></div>
+            <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-white via-white/70 to-transparent"></div>
+            <div className="relative">
+                <div className='flex justify-between'>
+                    <h1 className="text-2xl font-bold">{community.name}</h1>
+                    {isMember ? (
+                    <Button variant="default" size="sm" onClick={leaveCommunity}>Leave</Button>
+                    ): (
+                    <Button variant="default" size="sm" onClick={joinCommunity}>Join</Button>
+                    )} 
+                </div>
+
+                <p>{community.description}</p>
+            </div>
+        </div>
+
+
+
+        <div className="container mx-auto px-4 py-8 flex flex-col gap-16">
 
             <Typography variant="h4" component="h2" gutterBottom>Users</Typography>
             <Grid container spacing={2}>
@@ -300,6 +294,7 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
             </div>
             )}
 
+        </div>
         </div>
     );
 };

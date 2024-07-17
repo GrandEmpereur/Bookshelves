@@ -7,13 +7,13 @@ import { TextField, Typography, Grid, Dialog, DialogTitle, DialogContent, Dialog
 import options from '../api';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight, Eye, Search, Bell, Plus, Loader } from 'lucide-react';
+
+// INTERFACES
+import { Community } from '@/interfaces/community';
+// END INTERFACES
 
 
-interface Community {
-    communityId: string;
-    name: string;
-    description: string;
-}
 
 const CommunityPage: React.FC = () => {
     const [communities, setCommunities] = useState<Community[]>([]);
@@ -71,32 +71,40 @@ const CommunityPage: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 flex flex-col gap-16">
-            <div className='bg-accent text-primary-800 w-fit rounded-full py-1 px-2.5'>List</div>
-            <Button variant="outline">Découvrir</Button>
-            <Button variant="outlineActive">Découvrir</Button>
+        <div className=" mx-auto px-4 py-8 flex flex-col gap-6">
 
-            <CardTitle className="font-heading text-2xl md:text-5xl">Communities</CardTitle>
+        <h1 className="h1 mx-auto">Communities</h1>
+
+            <div className='scroll-container'>
+                <div className='scroll-content'>
+                    <Button variant="outline">All Communities</Button>
+                    <Button variant="outlineActive">My Communities</Button>
+                </div>
+                <div>
+                    <Plus className="h-5 w-5" onClick={() => {setShowDialog(true);}}/>
+                </div>
+            </div>
+            
+
             {error && <Typography color="error">{error}</Typography>}
-            <Grid container spacing={2}>
+
+            <div className="grid grid-cols-2 gap-4">
                 {communities.map((community) => (
-                    <Grid item key={community.communityId} xs={12} sm={6} md={4} lg={3}>
-                        <Card>
-                            <CardContent>
-                                <Link href={`/community/${community.communityId}`} passHref>
-                                    <Typography variant="h5" component="a" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                        {community.name}
-                                    </Typography>
-                                </Link>
-                                <Typography variant="body2">{community.description}</Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
+                <div>
+                    <Link  key={community.communityId} href={`/community/${community.communityId}`}  className="flex flex-col gap-2 bg-white p-3 shadow-[0_4px_6px_rgba(0,0,0,0.05)] rounded-2xl h-full">
+
+                    { community.image ?
+                        <img className="rounded-2xl" src={community.image} alt="Image for the community" />
+                        :                     
+                        <img className="rounded-2xl" src="/img/img_cate.png" alt="Logo" />
+                    }
+
+                    <p className="font-semibold">{community.name}</p>
+                    </Link>
+                </div>
                 ))}
-            </Grid>
-            <Button variant="contained" color="primary" onClick={() => {
-                setShowDialog(true);
-            }}>Add Community</Button>
+            </div>
+  
             <Dialog open={showDialog} onClose={() => setShowDialog(false)}>
                 <DialogTitle>Add New Community</DialogTitle>
                 <DialogContent>
@@ -123,9 +131,11 @@ const CommunityPage: React.FC = () => {
                             onChange={handleInputChange}
                         />
                         <DialogActions>
-                            <Button onClick={() => setShowDialog(false)} color="primary">
+                    
+                            <Button onClick={() => { setShowDialog(false); setError(null); }} color="primary">
                                 Cancel
                             </Button>
+
                             <Button type="submit" color="primary">
                                 Save
                             </Button>
