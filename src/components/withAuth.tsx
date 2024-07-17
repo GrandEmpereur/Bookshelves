@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '../services/authentication';
 
 const withAuth = (WrappedComponent: any) => {

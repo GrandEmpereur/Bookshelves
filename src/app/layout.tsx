@@ -1,9 +1,13 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import './globals.css';
 import localFont from 'next/font/local';
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+import { UserProvider } from '@/context/userContext';
+import Navbar from '@/components/Navbar';
 
-// Importer les polices locales
+// Import local fonts
 const primary = localFont({
   src: [
     {
@@ -74,12 +78,19 @@ const secondary = localFont({
 });
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <html lang="en" className={`${primary.variable} ${secondary.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <main>
-          {children}
-        </main>
+        <UserProvider>
+          <div className="flex">
+            <Navbar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+            <div className={`flex-grow flex flex-col items-center justify-center transition-margin duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
+              {children}
+            </div>
+          </div>
+        </UserProvider>
         <Toaster />
       </body>
     </html>

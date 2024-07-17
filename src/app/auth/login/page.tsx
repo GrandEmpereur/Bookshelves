@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { login } from "../../../services/authentication";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { z } from 'zod';
+import { loginSchema } from '@/services/validationSchema';
 
 const styles = {
   container_register: {
@@ -56,24 +58,27 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
+      loginSchema.parse({ email, password });
+
       const response = await login(email, password);
-      localStorage.setItem("token", response.token);
-      router.push("/feed");
-    } catch (error: unknown) {
-      const errorMessage =
-        (error as { response?: { data?: { message: string } } }).response?.data
-          ?.message || "An error occurred";
-      setError(errorMessage);
+      router.push('/feed');
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        setError(error.errors[0].message);
+      } else {
+        setError(error.message || 'An error occurred');
+      }
     }
   };
 
   return (
-    <div style={styles.container_form}>
+    <div style={{ ...styles.container_form, flexDirection: "column" as React.CSSProperties['flexDirection'] }}>
       <h1 style={styles.title_form}>Sign in </h1>
       <p style={styles.sub_title}>Please sign in to continue our app</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <form style={styles.container_register} onSubmit={handleSubmit}>
+      <form style={{...styles.container_register,  flexDirection: "column" as React.CSSProperties['flexDirection']}} onSubmit={handleSubmit}>
         <input
           style={styles.input_field}
           type="email"
