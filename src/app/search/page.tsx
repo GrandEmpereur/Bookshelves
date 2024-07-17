@@ -1,4 +1,7 @@
+'use client';
+
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface User {
   userId: string;
@@ -24,13 +27,20 @@ const Search: React.FC = () => {
   const [readingStats, setReadingStats] = useState<ReadingStats[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
     const fetchAuthors = async () => {
       try {
         const response = await fetch('https://bookish.empereur.me/api/search/users?roles=auteur', {
           headers: {
-            'Authorization': 'Bearer oat_MTY.TEhFMkNpLVpvYzdER2VjWUZYTHBzTFlqNUo3ejFubllfOHdycjBnbjk2MTExMTc3',
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
@@ -57,14 +67,20 @@ const Search: React.FC = () => {
     };
 
     fetchAuthors();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
     const fetchReadingStats = async () => {
       try {
         const response = await fetch('https://bookish.empereur.me/api/reading-stats', {
           headers: {
-            'Authorization': 'Bearer oat_MTY.TEhFMkNpLVpvYzdER2VjWUZYTHBzTFlqNUo3ejFubllfOHdycjBnbjk2MTExMTc3',
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
@@ -89,7 +105,7 @@ const Search: React.FC = () => {
     };
 
     fetchReadingStats();
-  }, []);
+  }, [router]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value.toLowerCase();
@@ -114,16 +130,16 @@ const Search: React.FC = () => {
         style={{ width: '300px', padding: '10px', fontSize: '16px' }}
       />
       <h2>Famous Authors</h2>
-      <div className="authors-list">
+      <div className="authors-list" style={{ display: 'flex', flexWrap: 'wrap' }}>
         {filteredAuthors.map(author => (
-          <div key={author.userId} className="author-card">
-            <img src={author.profilePicture || 'default-profile-picture-url'} alt={`${author.firstName} ${author.lastName}`} />
+          <div key={author.userId} className="author-card" style={{ margin: '10px', padding: '10px', border: '1px solid #ddd', borderRadius: '5px', textAlign: 'center' }}>
+            <img src={author.profilePicture || 'default-profile-picture-url'} alt={`${author.firstName} ${author.lastName}`} style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
             <h2>{author.firstName} {author.lastName}</h2>
           </div>
         ))}
       </div>
       <h2>Trending Books</h2>
-      <div className="books-list">
+      <div className="books-list" style={{ display: 'flex', flexWrap: 'wrap' }}>
         {readingStats.map(stat => (
           <img
             key={stat.statId}
@@ -135,10 +151,9 @@ const Search: React.FC = () => {
         ))}
       </div>
       <style jsx>{`
-
-      * {
+        * {
           font-family: 'Poppins', sans-serif;
-       }
+        }
         .authors-list {
           display: flex;
           flex-wrap: wrap;
@@ -154,6 +169,10 @@ const Search: React.FC = () => {
           width: 100px;
           height: 100px;
           border-radius: 50%;
+        }
+        .books-list {
+          display: flex;
+          flex-wrap: wrap;
         }
       `}</style>
     </div>
