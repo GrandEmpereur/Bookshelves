@@ -4,7 +4,6 @@ import { House, Bookmark, Search, MessageCircle, User, MessagesSquare, BookCopy 
 const BottomBar = () => {
   return (
     <div className="fixed h-[100px] w-full bottom-0 left-0 right-0 bg-accent text-black flex items-center justify-center rounded-t-[40px]">
-
       <div className='flex w-full items-center justify-around px-5'>
         <Link href="/feed" className="flex flex-col items-center">
           <House size={24} />
