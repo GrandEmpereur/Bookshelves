@@ -1,168 +1,147 @@
 "use client";
 
-import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
-import { TextField, Typography, Grid, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import options from "@/lib/api";
-
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Eye, Search, Bell, Plus, Loader, Crown } from 'lucide-react';
-
-// INTERFACES
-import { Community } from '@/interfaces/community';
-import { User } from '@/interfaces/user';
-// END INTERFACES
-
-
+import React, { useEffect, useState } from "react";
+import { fetchCommunities, createCommunity, joinCommunity, leaveCommunity } from "@/services/communityServices";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Heart, Plus } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const CommunityPage: React.FC = () => {
-  const [communities, setCommunities] = useState<Community[]>([]);
-  const [filteredCommunities, setFilteredCommunities] = useState<Community[]>([]);
+  const [communities, setCommunities] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [newCommunity, setNewCommunity] = useState({ name: '', description: '' });
-  const [showDialog, setShowDialog] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [filter, setFilter] = useState<'all' | 'my'>('all');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [joinedCommunities, setJoinedCommunities] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [newCommunityName, setNewCommunityName] = useState<string>('');
+  const [newCommunityDescription, setNewCommunityDescription] = useState<string>('');
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchCommunities = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get('https://bookish.empereur.me/api/community', options);
-        const userResponse = await axios.get('https://bookish.empereur.me/auth/me', options);
-        setUser(userResponse.data);
-
-        if (Array.isArray(response.data)) {
-          setCommunities(response.data);
-          setFilteredCommunities(response.data);
-        } else {
-          setError('Invalid data format for communities');
-        }
-      } catch (error: any) {
-        setError('Error fetching the community data');
-        console.error('Error fetching the community data:', error);
+        const data = await fetchCommunities();
+        console.log('Fetched data:', data);
+        setCommunities(data);
+      } catch (err) {
+        setError("Error fetching communities");
+      } finally {
+        setLoading(false);
       }
     };
-
-    fetchCommunities();
+    fetchData();
   }, []);
 
-  useEffect(() => {
-    if (filter === 'all') {
-      setFilteredCommunities(communities);
-    } else if (filter === 'my' && user) {
-      const myCommunities = communities.filter(community =>
-        user.roles.includes(`owner_community_${community.communityId}`) ||
-        user.roles.includes(`member_community_${community.communityId}`)
-      );
-      setFilteredCommunities(myCommunities);
-    }
-  }, [filter, communities, user]);
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewCommunity({ ...newCommunity, [name]: value });
-  };
-
-  const handleAddCommunity = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleJoinCommunity = async (communityId: string) => {
     try {
-      const communityData = {
-        name: newCommunity.name,
-        description: newCommunity.description
-      };
-
-      const response = await axios.post('https://bookish.empereur.me/api/community', communityData, options);
-
-      setCommunities([...communities, response.data]);
-      setNewCommunity({ name: '', description: '' });
-      setShowDialog(false);
-    } catch (error: any) {
-      setError('Error adding the community');
-      if (error.response) {
-        console.error('Error adding the community:', error.response.data);
-      } else {
-        console.error('Error adding the community:', error.message);
-      }
+      await joinCommunity(communityId);
+      setJoinedCommunities([...joinedCommunities, communityId]);
+    } catch (err) {
+      setError("Error joining community");
     }
   };
 
-  const handleCancel = () => {
-    setShowDialog(false);
-    setError(null);
-    setNewCommunity({ name: '', description: '' });
-  }
+  const handleLeaveCommunity = async (communityId: string) => {
+    try {
+      await leaveCommunity(communityId);
+      setJoinedCommunities(joinedCommunities.filter(id => id !== communityId));
+    } catch (err) {
+      setError("Error leaving community");
+    }
+  };
+
+  const handleCreateCommunity = async () => {
+    try {
+      const newCommunity = await createCommunity(newCommunityName, newCommunityDescription);
+      setCommunities([newCommunity, ...communities]);
+      setNewCommunityName('');
+      setNewCommunityDescription('');
+    } catch (err) {
+      setError("Error creating community");
+    }
+  };
 
   return (
-    <div className=" mx-auto px-4 py-8 flex flex-col gap-6">
-
-      <h1 className="h1 mx-auto">Communautés</h1>
-
-      <div className='scroll-container'>
-        <div className='scroll-content'>
-          <Button variant={filter === 'all' ? "outlineActive" : "outline"} onClick={() => setFilter('all')}>Toutes</Button>
-          <Button variant={filter === 'my' ? "outlineActive" : "outline"} onClick={() => setFilter('my')}>Mes communautés</Button>
-        </div>
-        <div>
-          <Plus className="h-5 w-5" onClick={() => { setShowDialog(true); }} />
-        </div>
+    <div className="flex flex-col gap-6 px-4">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Communautés</h1>
+        <Button variant="link" className="text-sm" onClick={() => router.push('/community/search')}>Rechercher</Button>
       </div>
-
-
-      {error && <Typography color="error">{error}</Typography>}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {filteredCommunities.map((community) => (
-          <Link key={community.communityId} href={`/community/${community.communityId}`} className="flex flex-col gap-2 bg-white p-3 shadow-[0_4px_6px_rgba(0,0,0,0.2)] rounded-2xl h-full">
-            <div className="relative">
-
-              {/* When is owner of the community */}
-              {/* <Crown className="absolute top-2 left-2 h-5 w-5 text-[#ECCB26]" fill="#ECCB26" /> */}
-              {community.image ? (
-                <img className="rounded-2xl" src={community.image} alt="Image for the community" />
-              ) : (
-                <img className="rounded-2xl" src="/img/img_cate.png" alt="Logo" />
-              )}
+      <div className="flex space-x-4 mb-4">
+        <Button variant="secondary">Toutes les communautés</Button>
+        <Button variant="outline">Mes communautés</Button>
+      </div>
+      {error && <div className="text-red-500">{error}</div>}
+      {loading ? (
+        <Skeleton className="w-full h-40 mb-4 rounded" />
+      ) : (
+        <div className="grid grid-cols-2 gap-4">
+          {communities.map(community => (
+            <div key={community.community_id} className="community-item p-4 bg-white rounded-lg shadow">
+              <Image
+                src={community.image || 'https://via.placeholder.com/150'}
+                alt="Community image"
+                width={150}
+                height={150}
+                className="rounded-lg mb-4"
+              />
+              <h3 className="text-lg font-semibold">{community.name}</h3>
+              <p className="text-sm text-gray-500">{community.description}</p>
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center">
+                  <Avatar>
+                    <AvatarImage src={community.user?.profilePicture || "https://github.com/shadcn.png"} />
+                    <AvatarFallback>{community.user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+                  </Avatar>
+                  <span className="ml-2 text-sm text-gray-500">{community.members_count} membres</span>
+                </div>
+                <button onClick={() => joinedCommunities.includes(community.community_id) ? handleLeaveCommunity(community.community_id) : handleJoinCommunity(community.community_id)} className="flex items-center">
+                  {joinedCommunities.includes(community.community_id) ? <Heart className="text-red-500" /> : <Heart />}
+                </button>
+              </div>
             </div>
-            <p className="font-semibold">{community.name}</p>
-          </Link>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      <Dialog open={showDialog} onClose={handleCancel}>
-        <DialogTitle>Créer une nouvelle communauté</DialogTitle>
-        <DialogContent>
-          <form onSubmit={handleAddCommunity}>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Name"
-              type="text"
-              fullWidth
-              name="name"
-              value={newCommunity.name}
-              onChange={handleInputChange}
-            />
-            <TextField
-              margin="dense"
-              label="Description"
-              type="text"
-              fullWidth
-              multiline
-              rows={4}
-              name="description"
-              value={newCommunity.description}
-              onChange={handleInputChange}
-            />
-            <DialogActions>
-              <Button type="button" onClick={handleCancel} color="primary">
-                Annuler
-              </Button>
-              <Button type="submit" color="primary">
-                Créer
-              </Button>
-            </DialogActions>
-          </form>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant={'secondary'} size={'icon'} className="fixed bottom-[125px] right-10 rounded-full ">
+            <Plus className="w-6 h-6" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Créer une nouvelle communauté</DialogTitle>
+            <DialogDescription>Remplissez les détails de votre nouvelle communauté ci-dessous</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div>
+              <Label htmlFor="newCommunityName">Nom</Label>
+              <Input id="newCommunityName" value={newCommunityName} onChange={(e) => setNewCommunityName(e.target.value)} />
+            </div>
+            <div>
+              <Label htmlFor="newCommunityDescription">Description</Label>
+              <Textarea id="newCommunityDescription" value={newCommunityDescription} onChange={(e) => setNewCommunityDescription(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleCreateCommunity}>Créer</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
