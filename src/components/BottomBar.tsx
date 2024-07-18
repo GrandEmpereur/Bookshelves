@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Home, Bookmark, Search, MessageCircle, User } from 'lucide-react';
+import { House, Bookmark, Search, MessageCircle, User, MessagesSquare, BookCopy } from 'lucide-react';
 
 const BottomBar = () => {
   return (
@@ -7,24 +7,24 @@ const BottomBar = () => {
 
       <div className='flex w-full items-center justify-around px-5'>
         <Link href="/feed" className="flex flex-col items-center">
-          <Home className="w-6 h-6" />
+          <House size={24} />
           <span className="text-xs mt-1">Accueil</span>
         </Link>
         <Link href="/lists" className="flex flex-col items-center">
-          <Bookmark className="w-6 h-6" />
+          <Bookmark size={24} />
           <span className="text-xs mt-1">Mes listes</span>
         </Link>
         <div className="relative flex justify-center items-center -mt-2">
           <Link href="/search" className="bg-primary w-12 h-12 flex items-center justify-center rounded-full shadow-lg">
-            <Search className="w-6 h-6 text-white" />
+            <Search size={24} className=" text-white" />
           </Link>
         </div>
         <Link href="/communities" className="flex flex-col items-center">
-          <MessageCircle className="w-6 h-6" />
+          <MessagesSquare size={24} />
           <span className="text-xs mt-1">Communautés</span>
         </Link>
         <Link href="/profile" className="flex flex-col items-center">
-          <User className="w-6 h-6" />
+          <User size={24} />
           <span className="text-xs mt-1">Profile</span>
         </Link>
       </div>
