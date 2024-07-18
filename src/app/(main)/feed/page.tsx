@@ -61,7 +61,7 @@ const FeedPage: React.FC = () => {
   };
 
   const handleComments = (feedId: string) => {
-    router.push(`/feed/${feedId}/commentaire`);
+    router.push(`/feed/${feedId}/comments`);
   };
 
   return (

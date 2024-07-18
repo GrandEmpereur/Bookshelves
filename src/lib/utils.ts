@@ -6,6 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+
 export function constructMetadata({
   title = 'CaseCobra - custom high-quality phone cases',
   description = 'Create custom high-quality phone cases in seconds',
