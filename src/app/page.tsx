@@ -33,7 +33,7 @@ const App: React.FC = () => {
     <div className="flex items-center justify-center w-full h-screen bg-primary">
       <div ref={containerRef} className="flex flex-col items-center gap-y-5">
         <Image src="/Bookish.svg" width={100} height={86} alt="Logo" />
-        <p ref={textRef} className="text-4xl font-heading uppercase text-white">Bookish</p>
+        <p ref={textRef} className="text-4xl font-heading uppercase text-white font-bold">Bookish</p>
       </div>
     </div>
   );

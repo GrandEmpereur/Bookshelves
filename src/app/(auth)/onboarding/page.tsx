@@ -12,31 +12,31 @@ const onboardingScreens = [
         image: '/img/onboarding/step1.png',
         title: (
             <>
-                La vie est courte et le monde est <span className="text-secondary">vaste</span>
+                Découvrez de nouveaux <span className="text-secondary">mondes</span>
             </>
         ),
-        description: 'Chez Bookish, nous personnalisons des voyages éducatifs fiables et dignes de confiance vers des destinations du monde entier',
-        buttonText: 'Commencer',
+        description: 'Plongez dans l\'univers fascinant des livres et découvrez des histoires captivantes. Rejoignez notre communauté de passionnés pour explorer.',
+        buttonText: 'Suivant',
     },
     {
         image: '/img/onboarding/step2.png',
         title: (
             <>
-                C’est un grand monde là-bas, allez <span className="text-secondary">explorer</span>
+                Partagez vos lectures <span className="text-secondary">préférées</span>
             </>
         ),
-        description: 'Pour tirer le meilleur parti de votre aventure, il vous suffit de partir et d’aller où vous aimez, nous vous attendons',
+        description: 'Échangez vos coups de cœur littéraires. Partagez vos avis, vos recommandations et découvrez de nouveaux livres grâce aux suggestions de notre communauté.',
         buttonText: 'Suivant',
     },
     {
         image: '/img/onboarding/step3.png',
         title: (
             <>
-                Les gens ne prennent pas de voyages, les voyages prennent <span className="text-secondary">les gens</span>
+                Discutez avec d'Autres <span className="text-secondary">passionnés</span>
             </>
         ),
-        description: 'Pour tirer le meilleur parti de votre aventure, il vous suffit de partir et d’aller où vous aimez, nous vous attendons',
-        buttonText: 'Suivant',
+        description: 'Engagez-vous dans des discussions passionnantes avec d\'autres amateurs de littérature. Partagez vos réflexions.',
+        buttonText: 'Commencer',
     },
 ];
 
@@ -130,11 +130,9 @@ const OnboardingScreen: React.FC = () => {
                 </div>
                 <h2 className="relative text-2xl font-bold text-center w-[309px]" ref={titleRef}>
                     {onboardingScreens[currentScreen].title}
-                    {currentScreen === 0 && (
-                        <div className="absolute bottom-[-15px] right-[60px] justify-center mt-2">
-                            <Image src="/underline.svg" width={62.92} height={10.3} alt="Wide SVG" />
-                        </div>
-                    )}
+                    <div className="absolute bottom-[-15px] right-[120px] justify-center mt-2">
+                        <Image src="/underline.svg" width={62.92} height={10.3} alt="Wide SVG" />
+                    </div>
                 </h2>
                 <p className="text-center text-gray-600" ref={descriptionRef}>
                     {onboardingScreens[currentScreen].description}
