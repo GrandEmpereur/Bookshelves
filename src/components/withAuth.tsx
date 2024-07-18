@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '../services/authentication';
+import { LoaderCircle  } from 'lucide-react';
+
 
 const withAuth = (WrappedComponent: any) => {
   return (props: any) => {
