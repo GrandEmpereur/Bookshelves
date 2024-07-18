@@ -36,3 +36,4 @@ export function constructMetadata({
     metadataBase: new URL("https://casecobra.vercel.app/")
   }
 }
+

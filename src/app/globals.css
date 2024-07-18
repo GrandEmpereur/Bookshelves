@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'styles/style.css';
-
 @layer base {
   :root {
     --background: 0 0% 98%;
@@ -133,3 +131,24 @@
     @apply font-poppins;
   }
 }
+
+body {
+  margin: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: var(--primary); /* Utilisez votre variable de couleur primaire */
+  padding-top: env(safe-area-inset-top); /* Ajouter le padding top pour la zone sécurisée */
+  z-index: 1000; /* Assurez-vous que la barre de navigation reste au-dessus du contenu */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px; /* Espacement intérieur de la barre de navigation */
+}
+

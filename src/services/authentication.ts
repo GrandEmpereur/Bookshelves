@@ -1,7 +1,8 @@
 import { CapacitorHttp, HttpOptions } from '@capacitor/core';
 import { Storage } from '@capacitor/storage';
+import path from 'path';
 
-const baseURL = 'https://bookish.empereur.me/';
+const baseURL = "https://bookish.empereur.me/"
 
 const api = {
   async post(url: string, data: any, token?: string) {
@@ -13,9 +14,7 @@ const api = {
       },
       data,
     };
-    console.log("POST Request", options); // Ajoutez ceci pour vérifier les détails de la requête
     const response = await CapacitorHttp.post(options);
-    console.log("Response", response); // Ajoutez ceci pour vérifier la réponse
     return response.data;
   },
   async get(url: string, token?: string) {
@@ -26,9 +25,7 @@ const api = {
         ...(token && { Authorization: `Bearer ${token}` }),
       },
     };
-    console.log("GET Request", options); // Ajoutez ceci pour vérifier les détails de la requête
     const response = await CapacitorHttp.get(options);
-    console.log("Response", response); // Ajoutez ceci pour vérifier la réponse
     return response.data;
   },
 };

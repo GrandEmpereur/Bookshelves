@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import gsap from 'gsap';
+import Link from 'next/link';
 
 const onboardingScreens = [
     {
@@ -121,6 +122,11 @@ const OnboardingScreen: React.FC = () => {
             <div ref={containerRef} className="flex flex-col items-center w-full max-w-md p-4 gap-y-6 pt-[440px]">
                 <div className="absolute top-12 right-12 w-full flex justify-end">
                     <Button variant={'link'} className="text-sm" onClick={handleSkip}>Passer</Button>
+                </div>
+                <div className="absolute top-16 right-16 w-full flex justify-end">
+                    <Link href="/feed" >
+                        feed
+                    </Link>
                 </div>
                 <h2 className="relative text-2xl font-bold text-center w-[309px]" ref={titleRef}>
                     {onboardingScreens[currentScreen].title}

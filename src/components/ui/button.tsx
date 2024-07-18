@@ -17,13 +17,13 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         blur: "blur-sm",
         round: "rounded-full",
-        accentVariant: "bg-[#F1DDCD] text-secondary-700",
+        accentVariant: "bg-accent-200 text-secondary-700 rounded-full",
       },
       size: {
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        icon: "h-10 w-10",
       },
     },
     defaultVariants: {
