@@ -12,6 +12,9 @@ api.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
+    } 
+    else {
+      config.headers['Authorization'] = `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`;
     }
     return config;
   },

@@ -6,7 +6,7 @@ import { Typography, Card, CardContent, Grid, TextField, Dialog, DialogTitle, Di
 import { Button } from '@/components/ui/button';
 import options from "@/lib/api";
 
-import { ChevronLeft, ChevronRight, Eye, Search, Bell, Plus, PencilLine, LoaderCircle , Ellipsis  } from 'lucide-react';
+import { Plus, PencilLine, LoaderCircle  } from 'lucide-react';
 
 // INTERFACES
 import { Community } from '@/interfaces/community';
@@ -266,13 +266,13 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
                 {isMember && (
                     <div>
                         <Dialog open={showFeedDialog} onClose={handleCancelFeed}>
-                            <DialogTitle>Add Feed</DialogTitle>
+                            <DialogTitle>Nouvelle publication</DialogTitle>
                             <DialogContent>
                                 <form onSubmit={handleAddFeed}>
                                     <TextField
                                         autoFocus
                                         margin="dense"
-                                        label="Title"
+                                        label="Titre"
                                         type="text"
                                         fullWidth
                                         name="title"
@@ -281,7 +281,7 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
                                     />
                                     <TextField
                                         margin="dense"
-                                        label="Content"
+                                        label="Contenu"
                                         type="text"
                                         fullWidth
                                         multiline
@@ -292,10 +292,10 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
                                     />
                                     <DialogActions>
                                         <Button type="button" onClick={handleCancelFeed} color="primary">
-                                            Cancel
+                                            Annuler
                                         </Button>
                                         <Button type="submit" color="primary">
-                                            Save
+                                            Publier
                                         </Button>
                                     </DialogActions>
                                 </form>
