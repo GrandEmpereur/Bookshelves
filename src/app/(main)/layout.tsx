@@ -5,9 +5,9 @@ import BottomBar from "@/components/BottomBar";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
-        <div className="flex flex-col min-h-screen mt-16">
+        <div className="w-full flex flex-col mt-10 px-12">
             <TopBar />
-            <div className="flex-1 flex flex-col h-full justify-center items-center mt-20 mb-32" >
+            <div className="w-full flex flex-col h-full mt-20 mb-32" >
                 {children}
             </div>
             <BottomBar />
