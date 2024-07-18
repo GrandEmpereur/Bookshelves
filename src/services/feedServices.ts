@@ -1,7 +1,7 @@
 import { CapacitorHttp, HttpOptions } from '@capacitor/core';
 import { Storage } from '@capacitor/storage';
 
-const baseURL = process.env.API_URL || '';
+const baseURL = "https://bookish.empereur.me/";
 
 const api = {
     async post(url: string, data: any, token?: string) {
@@ -34,11 +34,37 @@ interface ApiError {
     [key: string]: any;
 }
 
-const setToken = async (token: string) => {
-    await Storage.set({ key: 'token', value: token });
-};
-
 export const getToken = async () => {
     const { value } = await Storage.get({ key: 'token' });
     return value;
+};
+
+export const fetchFeeds = async (token: string) => {
+    try {
+        return await api.get('api/feeds', token);
+    } catch (error: unknown) {
+        const apiError = error as ApiError;
+        throw apiError;
+    }
+};
+
+export const fetchComments = async (feedId: string, token: string) => {
+    try {
+        return await api.get(`api/feeds/${feedId}/comments`, token);
+    } catch (error: unknown) {
+        const apiError = error as ApiError;
+        throw apiError;
+    }
+};
+
+export const likePost = async (feedId: string, token: string) => {
+    try {
+        return await api.post(`api/feeds/${feedId}/likes`, {}, token);
+    } catch (error: unknown) {
+        const apiError = error as ApiError;
+        throw apiError;
+    }
+};
+
+export const unlikePost = async (feedId: string, token: string) => {
 };

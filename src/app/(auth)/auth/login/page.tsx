@@ -36,6 +36,7 @@ const Login = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -46,7 +47,7 @@ const Login = () => {
       const errorMessage =
         (error as { response?: { data?: { message: string } } }).response?.data
           ?.message || "An error occurred";
-      form.setError("email", { message: errorMessage });
+      setLoginError(errorMessage);
     }
   };
 
@@ -82,9 +83,9 @@ const Login = () => {
             <p className="text-center text-muted-foreground mb-6">
               Please sign in to continue our app
             </p>
-            {form.formState.errors.email && (
+            {loginError && (
               <p className="text-error text-center">
-                {form.formState.errors.email.message}
+                {loginError}
               </p>
             )}
             <FormField
