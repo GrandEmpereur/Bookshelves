@@ -15,7 +15,7 @@ const TopBar = () => {
                         </span>
                     </Link>
 
-                    <Link href="/notification">
+                    <Link href="#">
                         <Button size={'icon'} variant={'accentVariant'}>
                             <Bell size={24} />
                         </Button>
