@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getCurrentUser } from '@/services/authentication';
+import { getCurrentUser } from '@/services/authServices';
 import { Settings } from "lucide-react";
 import { useRouter } from 'next/navigation';
 
