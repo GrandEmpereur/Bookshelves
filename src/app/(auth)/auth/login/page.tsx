@@ -18,11 +18,11 @@ import {
 } from "@/components/ui/form";
 import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
 import { Eye, EyeOff } from "lucide-react";
-import { login } from "@/services/authentication";
+import { login, setToken, setRefreshToken } from "@/services/authServices";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 const Login = () => {
@@ -41,8 +41,18 @@ const Login = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const response = await login(values.email, values.password);
-      localStorage.setItem("token", response.token);
-      router.push("/feed");
+      
+      if (!response.error) {
+        router.push("/feed");
+      }
+
+      if (response.token) {
+        await setToken(response.token);
+        await setRefreshToken(response.refresh_token);
+        
+      } else {
+        setLoginError("Invalid login credentials");
+      }
     } catch (error: unknown) {
       const errorMessage =
         (error as { response?: { data?: { message: string } } }).response?.data
@@ -119,7 +129,7 @@ const Login = () => {
                         onClick={togglePasswordVisibility}
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                       >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                       </button>
                     </div>
                   </FormControl>

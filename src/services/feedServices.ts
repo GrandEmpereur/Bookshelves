@@ -4,18 +4,6 @@ import { Storage } from '@capacitor/storage';
 const baseURL = "https://bookish.empereur.me/";
 
 const api = {
-    async post(url: string, data: any, token?: string) {
-        const options: HttpOptions = {
-            url: baseURL + url,
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-            data,
-        };
-        const response = await CapacitorHttp.post(options);
-        return response.data;
-    },
     async get(url: string, token?: string) {
         const options: HttpOptions = {
             url: baseURL + url,
@@ -27,15 +15,16 @@ const api = {
         const response = await CapacitorHttp.get(options);
         return response.data;
     },
-    async delete(url: string, token?: string) {
+    async post(url: string, data: any, token?: string) {
         const options: HttpOptions = {
             url: baseURL + url,
             headers: {
                 'Content-Type': 'application/json',
                 ...(token && { Authorization: `Bearer ${token}` }),
             },
+            data,
         };
-        const response = await CapacitorHttp.delete(options);
+        const response = await CapacitorHttp.post(options);
         return response.data;
     },
     async put(url: string, data: any, token?: string) {
@@ -50,6 +39,17 @@ const api = {
         const response = await CapacitorHttp.put(options);
         return response.data;
     },
+    async delete(url: string, token?: string) {
+        const options: HttpOptions = {
+            url: baseURL + url,
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token && { Authorization: `Bearer ${token}` }),
+            },
+        };
+        const response = await CapacitorHttp.delete(options);
+        return response.data;
+    },
 };
 
 interface ApiError {
@@ -57,102 +57,102 @@ interface ApiError {
     [key: string]: any;
 }
 
-export const fetchFeeds = async (token: string) => {
-    try {
+export const getToken = async () => {
+    const { value } = await Storage.get({ key: 'token' });
+    return value;
+};
 
-        const test = await api.get('api/feeds', token);
-        console.log('test', test);
-        return test;
+export const fetchFeeds = async () => {
+    try {
+        const token = await getToken();
+        if (!token) throw new Error('Token not found');
+        const response = await api.get('api/feeds', token);
+        return response;
     } catch (error: unknown) {
         const apiError = error as ApiError;
         throw apiError;
     }
 };
 
-export const fetchFeedById = async (feedId: string, token: string) => {
+export const fetchFeedById = async (feedId: string) => {
     try {
-        return await api.get(`api/feed/${feedId}`, token);
+        const token = await getToken();
+        if (!token) throw new Error('Token not found');
+        const response = await api.get(`api/feed/${feedId}`, token);
+        return response;
     } catch (error: unknown) {
         const apiError = error as ApiError;
         throw apiError;
     }
 };
 
-export const likeStatus = async (feedId: string, token: string) => {
+export const createFeed = async (title: string, content: string, user_id: string, image: string) => {
     try {
-        return await api.get(`api/feeds/${feedId}/likes`, token);
+        const token = await getToken();
+        if (!token) throw new Error('Token not found');
+        const response = await api.post('api/feed', { title, content, user_id, image }, token);
+        return response;
     } catch (error: unknown) {
         const apiError = error as ApiError;
         throw apiError;
     }
 };
 
-export const deleteFeed = async (feedId: string, token: string) => {
+
+export const updateFeed = async (feedId: string, title: string, content: string) => {
     try {
-        return await api.delete(`api/feed/${feedId}`, token);
+        const token = await getToken();
+        if (!token) throw new Error('Token not found');
+        const response = await api.put(`api/feed/${feedId}`, { title, content }, token);
+        return response;
     } catch (error: unknown) {
         const apiError = error as ApiError;
         throw apiError;
     }
 };
 
-export const saveFeed = async (feedId: string, title: string, content: string, token: string) => {
+export const deleteFeed = async (feedId: string) => {
     try {
-        return await api.put(`api/feed/${feedId}`, { title, content }, token);
+        const token = await getToken();
+        if (!token) throw new Error('Token not found');
+        const response = await api.delete(`api/feed/${feedId}`, token);
+        return response;
     } catch (error: unknown) {
         const apiError = error as ApiError;
         throw apiError;
     }
 };
 
-export const createNewFeed = async (newFeed: { title: string; content: string; user_id: string }, token: string) => {
+export const createCommunityPost = async (communityId: string, title: string, content: string) => {
     try {
-        return await api.post('api/feed', newFeed, token);
+        const token = await getToken();
+        if (!token) throw new Error('Token not found');
+        const response = await api.post('api/feed/community/post', { community_id: communityId, title, content }, token);
+        return response;
     } catch (error: unknown) {
         const apiError = error as ApiError;
         throw apiError;
     }
 };
 
-export const likePost = async (feedId: string, token: string) => {
+export const updateCommunityPost = async (postId: string, title: string, content: string) => {
     try {
-        return await api.post(`api/feeds/${feedId}/likes`, {}, token);
+        const token = await getToken();
+        if (!token) throw new Error('Token not found');
+        const response = await api.put(`api/feed/community/post/${postId}`, { title, content }, token);
+        return response;
     } catch (error: unknown) {
         const apiError = error as ApiError;
         throw apiError;
     }
 };
 
-export const unlikePost = async (feedId: string, token: string) => {
+export const deleteCommunityPost = async (postId: string) => {
     try {
-        return await api.delete(`api/feeds/${feedId}/likes`, token);
-    } catch (error: unknown) {
-        const apiError = error as ApiError;
-        throw apiError;
-    }
-};
-
-export const fetchComments = async (feedId: string, token: string) => {
-    try {
-        return await api.get(`api/feeds/${feedId}/comments`, token);
-    } catch (error: unknown) {
-        const apiError = error as ApiError;
-        throw apiError;
-    }
-};
-
-export const addComment = async (feedId: string, content: string, token: string) => {
-    try {
-        return await api.post(`api/feeds/${feedId}/comments`, { content }, token);
-    } catch (error: unknown) {
-        const apiError = error as ApiError;
-        throw apiError;
-    }
-};
-
-export const deleteComment = async (feedId: string, commentId: string, token: string) => {
-    try {
-        return await api.delete(`api/feeds/${feedId}/comments/${commentId}`, token);
+        const token = await getToken();
+        if (!token) throw new Error('Token not found');
+        const response = await api.delete(`api/feed/community/post/${postId}`, token);
+        return response;
     } catch (error: unknown) {
         const apiError = error as ApiError;
         throw apiError;
