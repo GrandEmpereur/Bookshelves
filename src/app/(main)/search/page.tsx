@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface User {
@@ -60,8 +60,8 @@ const Search: React.FC = () => {
           console.error('Unexpected API response structure:', data);
           throw new Error('API response does not contain expected data');
         }
-      } catch (error) {
-        setError(error.message);
+      } catch (error: any) {
+        setError(error.message); // Spécifiez que 'error' est de type 'any'
         console.error('Error fetching authors:', error);
       }
     };
@@ -98,8 +98,8 @@ const Search: React.FC = () => {
           console.error('Unexpected API response structure:', data);
           throw new Error('API response does not contain expected data');
         }
-      } catch (error) {
-        setError(error.message);
+      } catch (error: any) {
+        setError(error.message); // Spécifiez que 'error' est de type 'any'
         console.error('Error fetching reading stats:', error);
       }
     };

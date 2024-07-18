@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'styles/style.css';
-
 @layer base {
   :root {
     --background: 0 0% 98%;
@@ -133,3 +131,13 @@
     @apply font-poppins;
   }
 }
+
+body {
+  margin: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+input, select, textarea {
+  font-size: 16px;
+}
+

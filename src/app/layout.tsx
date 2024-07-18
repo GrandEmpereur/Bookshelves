@@ -4,8 +4,7 @@ import React, { useState, useEffect } from 'react';
 import './globals.css';
 import localFont from 'next/font/local';
 import { Toaster } from "@/components/ui/toaster";
-import { UserProvider } from '@/context/userContext';
-import Navbar from '@/components/Navbar';
+import { Metadata, Viewport } from 'next';
 
 // Import local fonts
 const primary = localFont({
@@ -77,20 +76,31 @@ const secondary = localFont({
   variable: '--font-secondary',
 });
 
+type Props = {
+  params: { [key: string]: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export function generateViewport({ params, searchParams }: Props): Viewport {
+  return {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  }
+}
+
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <html lang="en" className={`${primary.variable} ${secondary.variable}`}>
-      <body className="min-h-screen bg-background font-sans antialiased">
-        <UserProvider>
-          <div className="flex">
-            <Navbar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-            <div className={`flex-grow flex flex-col items-center justify-center transition-margin duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
-              {children}
-            </div>
+    <html lang="fr-FR" className={`${primary.variable} ${secondary.variable}`}>
+      <body>
+        <main className="flex flex-col min-h-screen">
+          <div className="flex-1 flex flex-col h-full justify-center items-center">
+            {children}
           </div>
-        </UserProvider>
+        </main>
         <Toaster />
       </body>
     </html>

@@ -1,4 +1,4 @@
-import { User } from '@/interfaces/user';
+import { User } from '@/interface/user';
 
 export interface Community {
     communityId: string;

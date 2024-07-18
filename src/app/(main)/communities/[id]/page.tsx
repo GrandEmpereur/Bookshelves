@@ -14,7 +14,7 @@ export default function CommunityPage({ params }: Params) {
     return <CommunityDetailsClient id={params.id} />;
 }
 
-// Fonction pour générer les chemins statiques
+// Fonction pour générer les chemins statiquess
 export async function generateStaticParams() {
     const response = await axios.get('https://bookish.empereur.me/api/community', options);
     const communities = response.data;
