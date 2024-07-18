@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
-import { register, verifyEmail } from "@/services/authentication";
+import { register, verifyEmail } from "@/services/authServices";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
