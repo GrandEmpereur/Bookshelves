@@ -2,27 +2,17 @@
 
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
-import { Typography, Card, CardContent, Grid, TextField, Button } from '@mui/material';
-import options from '../../api';
+import { Typography, Card, CardContent, Grid, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Button } from '@/components/ui/button';
+import options from "@/lib/api";
 
-interface User {
-    userId: string;
-    username: string;
-}
+import { ChevronLeft, ChevronRight, Eye, Search, Bell, Plus, PencilLine, LoaderCircle , Ellipsis  } from 'lucide-react';
 
-interface Community {
-    communityId: string;
-    name: string;
-    description: string;
-    users: User[];
-}
-
-interface Feed {
-    feedId: string;
-    title: string;
-    content: string;
-    communityId: string;
-}
+// INTERFACES
+import { Community } from '@/interfaces/community';
+import { User } from '@/interfaces/user';
+import { Feed } from '@/interfaces/feed';
+// END INTERFACES
 
 const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -30,7 +20,8 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
     const [feeds, setFeeds] = useState<Feed[]>([]);
     const [newFeed, setNewFeed] = useState({ title: '', content: '' });
     const [newCommunity, setNewCommunity] = useState({ name: '', description: '' });
-    const [showDialog, setShowDialog] = useState(false);
+    const [showModifyComDialog, setShowModifyComDialog] = useState(false);
+    const [showFeedDialog, setShowFeedDialog] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // Roles in community
@@ -49,7 +40,6 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
                 if (response.data.roles.includes(`member_community_${id}`)) {
                     setIsMember(true);
                 }
-                console.log(response.data.roles);
             } catch (error: any) {
                 setError('Error fetching the user details');
                 console.error('Error fetching the user details:', error);
@@ -93,13 +83,11 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
                 content: newFeed.content
             };
 
-            console.log('Sending feed data:', feedData);
-
             const response = await axios.post(`https://bookish.empereur.me/api/feed/community/post`, feedData, options);
-            console.log('Response from server:', response.data);
 
             setFeeds([...feeds, response.data]);
             setNewFeed({ title: '', content: '' });
+            setShowFeedDialog(false); // Close the feed dialog on successful submission
         } catch (error: any) {
             setError('Error posting the feed');
             if (error.response) {
@@ -118,13 +106,11 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
                 name: newCommunity.name,
                 description: newCommunity.description
             };
-            console.log('Sending community data:', communityData);
 
             const response = await axios.put(`https://bookish.empereur.me/api/community/${id}`, communityData, options);
-            console.log('Response from server:', response.data);
 
             setCommunity({ ...community, ...response.data });
-            setShowDialog(false);
+            setShowModifyComDialog(false);
         } catch (error: any) {
             setError('Error updating the community');
             if (error.response) {
@@ -148,12 +134,12 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
     const handleEditClick = () => {
         if (community) {
             setNewCommunity({ name: community.name, description: community.description });
-            setShowDialog(true);
+            setShowModifyComDialog(true);
         }
     };
 
     const joinCommunity = async () => {
-        try{
+        try {
             const joinCommunitydata = {
                 community_id: id
             }
@@ -166,107 +152,200 @@ const CommunityDetailsClient: React.FC<{ id: string }> = ({ id }) => {
     };
 
     const leaveCommunity = async () => {
-        try{
+        try {
             const leaveCommunityData = {
                 community_id: id
             }
             const response = await axios.post(`https://bookish.empereur.me/api/community/leave`, leaveCommunityData, options);
             setIsMember(false);
-        } catch(error:any){
+        } catch (error: any) {
             setError('Error leaving the community');
             console.error('Error leaving the community:', error);
         }
     }
+
+    const handleCancelFeed = () => {
+        setShowFeedDialog(false);
+        setNewFeed({ title: '', content: '' });
+        setError(null);
+    };
+
+    const handleCancelCommunity = () => {
+        setShowModifyComDialog(false);
+        setNewCommunity({ name: '', description: '' });
+        setError(null);
+    };
 
     if (error) {
         return <Typography color="error">{error}</Typography>;
     }
 
     if (!community) {
-        return <Typography>Loading...</Typography>;
+        return (
+            <div className="flex flex-col gap-2 items-center justify-center min-h-screen">
+                {/* <img src="/img/logo_green.png" alt="Loading" className="w-16" /> */}
+                <LoaderCircle className="w-16 h-16 animate-spin text-primary-800" />
+            </div>
+        );
     }
 
     return (
         <div>
 
-        <div className="relative w-full h-60 flex flex-col gap-4 py-10 px-4 bg-[url('/img/img_cate.png')] bg-cover bg-center">
-            <div className="absolute inset-0 bg-white opacity-50 "></div>
-            <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-white via-white/70 to-transparent"></div>
-            <div className="relative">
-                <div className='flex justify-between'>
-                    <h1 className="text-2xl font-bold">{community.name}</h1>
-                    {isMember ? (
-                    <Button variant="default" size="sm" onClick={leaveCommunity}>Leave</Button>
-                    ): (
-                    <Button variant="default" size="sm" onClick={joinCommunity}>Join</Button>
-                    )} 
+            <div className="relative w-full h-60 flex flex-col gap-4 py-8 px-4 bg-[url('/img/img_cate.png')] bg-cover bg-center">
+                <div className="absolute inset-0 bg-white opacity-50 "></div>
+                <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-white via-white/70 to-transparent"></div>
+                <div className="relative flex flex-col gap-4">
+
+                    <div className='flex justify-between items-center gap-2'>
+                        <h1 className="h1">{community.name}</h1>
+                        {isOwner && (
+                            <PencilLine className="h-5 w-5" onClick={() => setShowModifyComDialog(true)}/>
+                        )}
+                    </div>
+
+                    <p>{community.description}</p>
+                    {!isOwner && (
+                        isMember ? (
+                            <Button variant="default" size="sm" onClick={leaveCommunity}>Quitter</Button>
+                        ) : (
+                            <Button variant="default" size="sm" onClick={joinCommunity}>Rejoindre</Button>
+                        )
+                    )}
+                </div>
+            </div>
+
+            <div className='p-4 flex flex-col gap-4'>
+
+                <div className='body-3 flex justify-between'>
+                    <div>
+                        <p className='font-semibold'>Modéré par</p>
+                        <p>(Nom)</p>
+                    </div>
+
+                    <p className='font-semibold'>{community.users.length} {community.users.length > 1 ? ' membres' : ' membre'}</p>
+
+                    {/* Afficher par la suite les photos de profils */}
+                    {/* {community.users.map((user) => (
+                     <p key={user.userId}>{user.username}</p>
+                ))} */}
                 </div>
 
-                <p>{community.description}</p>
-            </div>
-        </div>
+                <div className='flex flex-col gap-4'>
+                    <div className='flex justify-between items-center'>
+                        <h2 className='h2'>Publications</h2>
+                        {isMember && (
+                        <Plus className="h-5 w-5" onClick={() => setShowFeedDialog(true)}/>
+                        )}
+                    </div>
 
+                    {!isMember && (
+                    <p className='disclaimer'>Vous devez rejoindre la communauté pour pouvoir poster.</p>
+                    )}
 
-
-        <div className="container mx-auto px-4 py-8 flex flex-col gap-16">
-            <Typography variant="h3" component="h1" gutterBottom>{community.name}</Typography>
-            <Typography variant="body2">{community.description}</Typography>
-            <Typography variant="h4" component="h2" gutterBottom>Users</Typography>
-            <Grid container spacing={2}>
-                {community.users.map((user) => (
-                    <Grid item key={user.userId} xs={12} sm={6} md={4} lg={3}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h5">{user.username}</Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
-            <Typography variant="h4" component="h2" gutterBottom>Feeds</Typography>
-
-            {feeds.length > 0 ? (
-                <Grid container spacing={2}>
-                    {feeds.map((feed) => (
-                        <Grid item key={feed.feedId} xs={12} sm={6} md={4} lg={3}>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h5">{feed.title}</Typography>
-                                    <Typography variant="body2">{feed.content}</Typography>
-                                </CardContent>
-                            </Card>
+                    {feeds.length > 0 ? (
+                        <Grid container spacing={2}>
+                            {feeds.map((feed) => (
+                                <Grid item key={feed.feedId} xs={12} sm={6} md={4} lg={3}>
+                                    <Card>
+                                        <CardContent>
+                                            <Typography variant="h5">{feed.title}</Typography>
+                                            <Typography variant="body2">{feed.content}</Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))}
                         </Grid>
-                    ))}
-                </Grid>
-            ) : (
-                <Typography variant="body2">Il n'y a pas de publications pour le moment.</Typography>
-            )}
-            
+                    ) : (
+                        <p className='disclaimer'>Il n'y a pas de publications pour le moment.</p>
+                    )}
+                </div>
 
-            {isMember && ( 
-                <div>
-            <Typography variant="h4" component="h2" gutterBottom>Add Feed</Typography>
-            <form onSubmit={handleAddFeed}>
-                <TextField
-                    name="title"
-                    label="Title"
-                    value={newFeed.title}
-                    onChange={handleInputChange}
-                    fullWidth
-                    margin="normal"
-                />
-                <TextField
-                    name="content"
-                    label="Content"
-                    value={newFeed.content}
-                    onChange={handleInputChange}
-                    fullWidth
-                    margin="normal"
-                    multiline
-                    rows={4}
-                />
-                <Button type="submit" variant="contained" color="primary">Add Feed</Button>
-            </form>
+                
+
+                {isMember && (
+                    <div>
+                        <Dialog open={showFeedDialog} onClose={handleCancelFeed}>
+                            <DialogTitle>Add Feed</DialogTitle>
+                            <DialogContent>
+                                <form onSubmit={handleAddFeed}>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        label="Title"
+                                        type="text"
+                                        fullWidth
+                                        name="title"
+                                        value={newFeed.title}
+                                        onChange={handleInputChange}
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        label="Content"
+                                        type="text"
+                                        fullWidth
+                                        multiline
+                                        rows={4}
+                                        name="content"
+                                        value={newFeed.content}
+                                        onChange={handleInputChange}
+                                    />
+                                    <DialogActions>
+                                        <Button type="button" onClick={handleCancelFeed} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <Button type="submit" color="primary">
+                                            Save
+                                        </Button>
+                                    </DialogActions>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                )}
+
+                {isOwner && (
+                    <Dialog open={showModifyComDialog} onClose={handleCancelCommunity}>
+                        <DialogTitle>Modifier la comunauté</DialogTitle>
+                        <DialogContent>
+                            <form onSubmit={handleUpdateCommunity}>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    label="Name"
+                                    type="text"
+                                    fullWidth
+                                    name="name"
+                                    value={newCommunity.name}
+                                    onChange={handleInputChange}
+                                />
+                                <TextField
+                                    margin="dense"
+                                    label="Description"
+                                    type="text"
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    name="description"
+                                    value={newCommunity.description}
+                                    onChange={handleInputChange}
+                                />
+                        <p onClick={handleDeleteCommunity}>Supprimer la comunauté</p>
+                              
+                                <DialogActions>
+                                    <Button type="button" onClick={handleCancelCommunity} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" color="primary">
+                                        Save
+                                    </Button>
+                                </DialogActions>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                )}
+
+            </div>
         </div>
     );
 };
