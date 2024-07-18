@@ -123,7 +123,7 @@ const OnboardingScreen: React.FC = () => {
                 <div className="absolute top-12 right-12 w-full flex justify-end">
                     <Button variant={'link'} className="text-sm" onClick={handleSkip}>Passer</Button>
                 </div>
-                <div className="absolute top-16 right-16 w-full flex justify-end">
+                <div className="absolute top-[80px] right-16 w-full flex justify-end">
                     <Link href="/feed" >
                         feed
                     </Link>

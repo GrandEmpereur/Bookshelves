@@ -5,6 +5,7 @@ import './globals.css';
 import localFont from 'next/font/local';
 import { Toaster } from "@/components/ui/toaster";
 import { Metadata, Viewport } from 'next';
+import Head from 'next/head';
 
 // Import local fonts
 const primary = localFont({
@@ -91,15 +92,13 @@ export function generateViewport({ params, searchParams }: Props): Viewport {
 }
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <html lang="fr-FR" className={`${primary.variable} ${secondary.variable}`}>
-      <body>
-        <main className="flex flex-col min-h-screen">
-          <div className="flex-1 flex flex-col h-full justify-center items-center">
-            {children}
-          </div>
+    <body>
+      <main className="flex flex-col min-h-screen">
+        <div className="flex-1 flex flex-col h-full justify-center items-center">
+          {children}
+        </div>
         </main>
         <Toaster />
       </body>
