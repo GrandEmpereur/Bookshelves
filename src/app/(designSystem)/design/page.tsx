@@ -213,6 +213,8 @@ function Page() {
 						</CardHeader>
 						<CardContent>
 							<div className="mb-8">
+								<div className="font-heading font-bold text-4xl">TITRE 1 - Neuton</div>
+
 								<div className="text-2xl md:text-5xl font-bold font-neuton mb-4">TITRE 1 - NEUTON</div>
 								<div className="text-xl md:text-4xl font-bold font-neuton mb-4">TITRE 2 - NEUTON</div>
 								<div className="text-lg md:text-3xl font-bold font-neuton mb-4">TITRE 3 - NEUTON</div>

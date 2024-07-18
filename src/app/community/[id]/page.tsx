@@ -1,5 +1,5 @@
 import axios from 'axios';
-import options from '../../api';
+import options from "@/lib/api";
 
 
 import CommunityDetailsClient from './CommunityDetailsClient';
