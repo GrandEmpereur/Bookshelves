@@ -15,6 +15,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const FeedPage: React.FC = () => {
   const [feeds, setFeeds] = useState<any[]>([]);
@@ -60,10 +73,6 @@ const FeedPage: React.FC = () => {
     }));
   };
 
-  const handleComments = (feedId: string) => {
-    router.push(`/feed/${feedId}/comments`);
-  };
-
   return (
     <div className="flex flex-col gap-6 px-4">
       {error && <div className="text-red-500">{error}</div>}
@@ -80,7 +89,7 @@ const FeedPage: React.FC = () => {
 
                 <div className="ml-3">
                   <h3 className="font-bold">{feed.user.username}</h3>
-                  <p className="text-sm text-gray-500">{formatDistanceToNow(new Date(feed.createdAt), { addSuffix: true })}</p>
+                  <p className="text-sm text-gray-500">{formatDistanceToNow(new Date(feed.createdAt))}</p>
                 </div>
               </div>
               <h3 className="text-lg font-semibold">{feed.title}</h3>
@@ -100,9 +109,26 @@ const FeedPage: React.FC = () => {
                   </button>
 
                   <div className="flex items-center ml-4">
-                    <button onClick={() => handleComments(feed.feedId)} className="flex items-center">
-                      <MessageSquare />
-                    </button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <MessageSquare />
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Ajouter votre commentaire</DialogTitle>
+                          <DialogDescription>
+                            Ajouter Votre commentaire ici
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <Textarea />
+                        </div>
+                        <DialogFooter>
+                          <Button type="submit">Publier le commentaire</Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+
                     <span className="ml-2">{feed.comments ? feed.comments.length : 0}</span>
                   </div>
 
@@ -117,14 +143,15 @@ const FeedPage: React.FC = () => {
                   </PopoverTrigger>
                   <PopoverContent>
                     <div className="p-2">
-                      <button className="text-red-500">Report</button>
-                      <button className="text-blue-500">Delete</button>
+                      <button className="text-red-500">Signaler</button>
                     </div>
                   </PopoverContent>
                 </Popover>
               </div>
             </div>
             <Separator />
+
+
           </>
         ))
       ) : (
