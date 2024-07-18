@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { fetchFeeds, createFeed } from "@/services/feedServices";
 import { getToken, getCurrentUser } from "@/services/authServices";
 import { likeFeed, unlikeFeed } from "@/services/likeServices";
+import { fetchComments, createComment } from "@/services/commentServices";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import Image from 'next/image';
@@ -36,8 +37,10 @@ const FeedPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [newPostTitle, setNewPostTitle] = useState<string>('');
   const [newPostContent, setNewPostContent] = useState<string>('');
+  const [newCommentContent, setNewCommentContent] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [image, setImage] = useState<string>('https://via.placeholder.com/300');
+  const [selectedFeedId, setSelectedFeedId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -115,6 +118,29 @@ const FeedPage: React.FC = () => {
     }
   };
 
+  const handleCreateComment = async () => {
+    try {
+      if (!currentUser || !selectedFeedId) throw new Error("User or Feed not found");
+      const newComment = await createComment(selectedFeedId, newCommentContent);
+      console.log('New comment:', newComment);
+      setNewCommentContent('');
+      setSelectedFeedId(null);  // Close the comment dialog
+
+      // Update the comment count for the feed
+      setFeeds(feeds.map(feed => {
+        if (feed.feedId === selectedFeedId) {
+          return {
+            ...feed,
+            comments: [...feed.comments, newComment]
+          };
+        }
+        return feed;
+      }));
+    } catch (err) {
+      setError("Error creating comment");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 px-4">
       {error && <div className="text-red-500">{error}</div>}
@@ -159,7 +185,7 @@ const FeedPage: React.FC = () => {
                   <div className="flex items-center ml-4">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <MessageSquare />
+                        <button onClick={() => setSelectedFeedId(feed.feedId)}><MessageSquare /></button>
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
@@ -167,10 +193,10 @@ const FeedPage: React.FC = () => {
                           <DialogDescription>Ajouter Votre commentaire ici</DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
-                          <Textarea />
+                          <Textarea value={newCommentContent} onChange={(e) => setNewCommentContent(e.target.value)} />
                         </div>
                         <DialogFooter>
-                          <Button type="submit">Publier le commentaire</Button>
+                          <Button type="button" onClick={handleCreateComment}>Publier le commentaire</Button>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
