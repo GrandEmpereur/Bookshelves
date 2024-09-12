@@ -32,7 +32,7 @@ const onboardingScreens = [
         image: '/img/onboarding/step3.png',
         title: (
             <>
-                Discutez avec d'Autres <span className="text-secondary">passionnés</span>
+                Discutez avec d'autres <span className="text-secondary">passionnés</span>
             </>
         ),
         description: 'Engagez-vous dans des discussions passionnantes avec d\'autres amateurs de littérature. Partagez vos réflexions.',
@@ -44,7 +44,6 @@ const OnboardingScreen: React.FC = () => {
     const [currentScreen, setCurrentScreen] = useState(0);
     const router = useRouter();
     const containerRef = useRef<HTMLDivElement>(null);
-    const imageRef = useRef<HTMLImageElement>(null);
     const titleRef = useRef<HTMLHeadingElement>(null);
     const descriptionRef = useRef<HTMLParagraphElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -109,28 +108,21 @@ const OnboardingScreen: React.FC = () => {
 
     return (
         <div className="relative flex items-center justify-center w-full h-screen bg-white text-black">
-            <div className='absolute top-0 left-0 w-full'>
+            <div className='absolute top-0 left-0 w-full h-[50vh] md:h-[60vh] lg:h-[70vh]'>
                 <Image
                     src={onboardingScreens[currentScreen].image}
-                    width={375}
-                    height={444}
+                    layout="fill"
+                    objectFit="cover"
                     alt="Onboarding image"
-                    className="rounded-b-[30px] w-full"
-                    ref={imageRef}
                 />
             </div>
-            <div ref={containerRef} className="flex flex-col items-center w-full max-w-md p-4 gap-y-6 pt-[440px]">
-                <div className="absolute top-12 right-12 w-full flex justify-end">
+            <div ref={containerRef} className="flex flex-col items-center w-full max-w-md p-4 gap-y-6 pt-[60vh] md:pt-[65vh] lg:pt-[75vh]">
+                <div className="absolute top-12 right-4 md:right-12 flex justify-end">
                     <Button variant={'link'} className="text-sm" onClick={handleSkip}>Passer</Button>
                 </div>
-                <div className="absolute top-[80px] right-16 w-full flex justify-end">
-                    <Link href="/feed" >
-                        feed
-                    </Link>
-                </div>
-                <h2 className="relative text-2xl font-bold text-center w-[309px]" ref={titleRef}>
+                <h2 className="text-2xl font-bold text-center w-full" ref={titleRef}>
                     {onboardingScreens[currentScreen].title}
-                    <div className="absolute bottom-[-15px] right-[120px] justify-center mt-2">
+                    <div className="mt-2">
                         <Image src="/underline.svg" width={62.92} height={10.3} alt="Wide SVG" />
                     </div>
                 </h2>

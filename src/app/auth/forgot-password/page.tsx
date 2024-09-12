@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,27 +10,33 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/comp
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
-import { register, verifyEmail } from "@/services/authServices";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
+// Ajoute le schéma pour la date de naissance
 const registerSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  username: z.string().min(1, "Le nom d'utilisateur est requis"),
+  email: z.string().email("Adresse email invalide"),
+  password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
+  birth_date: z.string().regex(
+    /^\d{4}-\d{2}-\d{2}$/,
+    "La date de naissance doit être au format YYYY-MM-DD"
+  ),
 });
 
 const verifySchema = z.object({
-  verificationCode: z.string().length(8, "Verification code must be 8 digits"),
+  verificationCode: z.string().length(8, "Le code de vérification doit contenir 8 chiffres"),
 });
 
 const Register = () => {
+  const { user, isAuthenticated, registerUser } = useAuth();
   const router = useRouter();
   const [isRegistered, setIsRegistered] = useState(false);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
   const registerForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -38,6 +44,7 @@ const Register = () => {
       username: "",
       email: "",
       password: "",
+      birth_date: "",
     },
   });
 
@@ -48,27 +55,35 @@ const Register = () => {
     },
   });
 
-  const onRegister = async (values: z.infer<typeof registerSchema>) => {
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      router.push("/feed");
+    }
+  }, [isAuthenticated, user, router]);
+
+  const onRegisterSubmit = async (values: z.infer<typeof registerSchema>) => {
     try {
-      const response = await register(values.username, values.email, values.password);
+      const isValid = await registerForm.trigger();
+      if (!isValid) return;
+
+      await registerUser({
+        username: values.username,
+        email: values.email,
+        password: values.password,
+        birth_date: values.birth_date,
+      });
       setUserEmail(values.email);
       setIsRegistered(true);
-      setOpenAlertDialog(true);
-      registerForm.reset();
     } catch (error: unknown) {
-      const errorMessage = (error as { response?: { data?: { message: string } } }).response?.data?.message || "An error occurred";
-      registerForm.setError("email", { message: errorMessage });
+      const errorMessage = (error as { message: string }).message || "Une erreur est survenue";
+      setRegisterError(errorMessage);
+      registerForm.reset();
     }
   };
 
-  const onVerifyEmail = async (values: z.infer<typeof verifySchema>) => {
-    try {
-      const response = await verifyEmail(userEmail, values.verificationCode);
-      router.push("/auth/login");
-    } catch (error: unknown) {
-      const errorMessage = (error as { response?: { data?: { message: string } } }).response?.data?.message || "An error occurred";
-      verifyForm.setError("verificationCode", { message: errorMessage });
-    }
+  const onVerifySubmit = async (values: z.infer<typeof verifySchema>) => {
+    // Ajouter ici la logique pour vérifier le code OTP, selon la configuration de ton backend
+    router.push("/feed");
   };
 
   const togglePasswordVisibility = () => {
@@ -79,10 +94,10 @@ const Register = () => {
     <div className="relative flex items-center justify-center w-full h-screen bg-background text-foreground px-5">
       <div className="w-full max-w-md">
         <Form {...registerForm}>
-          <form onSubmit={registerForm.handleSubmit(onRegister)} className={`space-y-6 ${isRegistered ? 'hidden' : ''}`}>
+          <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className={`space-y-6 ${isRegistered ? 'hidden' : ''}`}>
             <div className="flex justify-start mb-4">
               <Button variant="accentVariant" size="icon" className="rounded-full">
-                <span className="sr-only">Back</span>
+                <span className="sr-only">Retour</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -99,18 +114,23 @@ const Register = () => {
                 </svg>
               </Button>
             </div>
-            <h1 className="text-4xl font-bold text-center">Sign up now</h1>
+            <h1 className="text-4xl font-bold text-center">Inscrivez-vous maintenant</h1>
             <p className="text-center text-muted-foreground mb-6">
-              Please fill the details and create account
+              Veuillez remplir les détails pour créer un compte
             </p>
+            {registerError && (
+              <p className="text-error text-center">
+                {registerError}
+              </p>
+            )}
             <FormField
               control={registerForm.control}
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Nom d'utilisateur</FormLabel>
                   <FormControl>
-                    <Input placeholder="Username" {...field} />
+                    <Input placeholder="Nom d'utilisateur" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,15 +151,32 @@ const Register = () => {
             />
             <FormField
               control={registerForm.control}
+              name="birth_date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date de naissance</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="YYYY-MM-DD"
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={registerForm.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Password"
+                        placeholder="Mot de passe"
                         {...field}
                       />
                       <button
@@ -155,26 +192,26 @@ const Register = () => {
                 </FormItem>
               )}
             />
-            <p className="text-sm text-muted-foreground">Password must be 8 characters</p>
+            <p className="text-sm text-muted-foreground">Le mot de passe doit contenir au moins 8 caractères</p>
             <Button type="submit" className="w-full bg-primary text-primary-foreground">
-              Sign Up
+              S'inscrire
             </Button>
           </form>
         </Form>
 
         {isRegistered && (
           <Form {...verifyForm}>
-            <form onSubmit={verifyForm.handleSubmit(onVerifyEmail)} className="space-y-6">
-              <h2 className="text-3xl font-bold text-center">OTP Verification</h2>
+            <form onSubmit={verifyForm.handleSubmit(onVerifySubmit)} className="space-y-6">
+              <h2 className="text-3xl font-bold text-center">Vérification OTP</h2>
               <p className="text-center text-muted-foreground mb-6">
-                Please check your email {userEmail} to see the verification code
+                Veuillez vérifier votre email {userEmail} pour voir le code de vérification
               </p>
               <FormField
                 control={verifyForm.control}
                 name="verificationCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>OTP Code</FormLabel>
+                    <FormLabel>Code OTP</FormLabel>
                     <FormControl>
                       <InputOTP
                         value={field.value || ""}
@@ -203,7 +240,7 @@ const Register = () => {
                 )}
               />
               <Button type="submit" className="w-full bg-primary text-primary-foreground">
-                Verify Email
+                Vérifier l'email
               </Button>
             </form>
           </Form>
@@ -211,31 +248,19 @@ const Register = () => {
 
         <div className="mt-6 text-center">
           <p>
-            Already have an account?{" "}
+            Vous avez déjà un compte ?{" "}
             <Link href="/auth/login" className="text-secondary">
-              Log in
+              Se connecter
             </Link>
           </p>
-          <p className="mt-4">Or connect</p>
-          <div className="flex justify-center space-x-4 mt-2">
-            <Button variant="secondary" className="p-2">
-              <FaFacebook className="w-6 h-6 text-white" />
-            </Button>
-            <Button variant="secondary" className="p-2">
-              <FaGoogle className="w-6 h-6 text-white" />
-            </Button>
-            <Button variant="secondary" className="p-2">
-              <FaTwitter className="w-6 h-6 text-white" />
-            </Button>
-          </div>
         </div>
 
         <AlertDialog open={openAlertDialog} onOpenChange={setOpenAlertDialog}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Check your email</AlertDialogTitle>
+              <AlertDialogTitle>Vérifiez votre email</AlertDialogTitle>
               <AlertDialogDescription>
-                We have sent password recovery instructions to your email.
+                Nous avons envoyé des instructions de récupération à votre email.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

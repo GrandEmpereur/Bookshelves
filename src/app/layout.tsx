@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './globals.css';
 import localFont from 'next/font/local';
 import { Toaster } from "@/components/ui/toaster";
-import { Metadata, Viewport } from 'next';
-import Head from 'next/head';
+import { AuthProvider } from '@/context/AuthContext';
 
 // Import local fonts
 const primary = localFont({
@@ -77,30 +76,24 @@ const secondary = localFont({
   variable: '--font-secondary',
 });
 
-type Props = {
-  params: { [key: string]: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
-
-export function generateViewport({ params, searchParams }: Props): Viewport {
-  return {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  }
-}
-
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <html lang="fr-FR" className={`${primary.variable} ${secondary.variable}`}>
-    <body>
-      <main className="flex flex-col min-h-screen">
-        <div className="flex-1 flex flex-col h-full justify-center items-center">
-          {children}
-        </div>
-        </main>
-        <Toaster />
+      <head>
+        <meta
+          name="viewport"
+          content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </head>
+      <body>
+        <AuthProvider>
+          <main className="flex flex-col min-h-screen">
+            <div className="flex-1 flex flex-col h-full justify-center items-center">
+              {children}
+            </div>
+          </main>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

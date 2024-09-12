@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -16,48 +16,56 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
 import { Eye, EyeOff } from "lucide-react";
-import { login, setToken, setRefreshToken } from "@/services/authServices";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/hooks/useAuth";
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  email: z.string().email("Adresse email invalide"),
+  password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
+  rememberMe: z.boolean().optional(),
 });
 
 const Login = () => {
+  const { user, isAuthenticated, loginUser } = useAuth(); // Ajout de user et isAuthenticated
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
+  // Redirection automatique si l'utilisateur est déjà connecté
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      router.push("/feed");
+    }
+  }, [isAuthenticated, user, router]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await login(values.email, values.password);
-      
-      if (!response.error) {
-        router.push("/feed");
-      }
+      // Vérification des erreurs de validation du formulaire
+      const isValid = await form.trigger();
+      if (!isValid) return;
 
-      if (response.token) {
-        await setToken(response.token);
-        await setRefreshToken(response.refresh_token);
-        
-      } else {
-        setLoginError("Invalid login credentials");
+      // Tentative de connexion
+      await loginUser(values.email, values.password);
+
+      // Si l'utilisateur est connecté, redirection vers /feed
+      if (isAuthenticated) {
+        router.push("/feed");
       }
     } catch (error: unknown) {
       const errorMessage =
-        (error as { response?: { data?: { message: string } } }).response?.data
-          ?.message || "An error occurred";
+        (error as { message: string }).message || "Une erreur est survenue";
       setLoginError(errorMessage);
+      form.reset(); // Réinitialise le formulaire si une erreur survient
     }
   };
 
@@ -66,13 +74,13 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center w-full h-screen bg-background text-foreground px-5">
-      <div className="w-full max-w-md">
+    <div className="relative flex items-center justify-center w-full h-screen bg-background text-foreground px-5 md:px-8 lg:px-12">
+      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl bg-white p-6 md:p-8 lg:p-12 rounded-lg shadow-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
               <Button variant="accentVariant" size="icon" className="rounded-full">
-                <span className="sr-only">Back</span>
+                <span className="sr-only">Retour</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -89,9 +97,11 @@ const Login = () => {
                 </svg>
               </Button>
             </div>
-            <h1 className="text-4xl font-bold text-center">Sign in</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">
+              Se connecter
+            </h1>
             <p className="text-center text-muted-foreground mb-6">
-              Please sign in to continue our app
+              Veuillez vous connecter pour continuer
             </p>
             {loginError && (
               <p className="text-error text-center">
@@ -105,7 +115,11 @@ const Login = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Email" {...field} />
+                    <Input
+                      placeholder="Email"
+                      {...field}
+                      className="text-[16px] md:text-[18px] lg:text-[20px]"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,12 +130,13 @@ const Login = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
+                        className="text-[16px] md:text-[18px] lg:text-[20px]"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Password"
+                        placeholder="Mot de passe"
                         {...field}
                       />
                       <button
@@ -137,35 +152,38 @@ const Login = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="rememberMe"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-3">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel>Se souvenir de moi</FormLabel>
+                </FormItem>
+              )}
+            />
             <div className="flex justify-end mb-4">
               <Link href="/auth/forgot-password" className="text-secondary">
-                Forgot Password?
+                Mot de passe oublié ?
               </Link>
             </div>
-            <Button type="submit" className="w-full bg-primary text-primary-foreground">
-              Sign In
+            <Button
+              type="submit"
+              className="w-full bg-primary text-primary-foreground py-3 md:py-4 lg:py-5"
+            >
+              Se connecter
             </Button>
           </form>
         </Form>
         <div className="mt-6 text-center">
           <p>
-            Don’t have an account?{" "}
+            Vous n'avez pas de compte ?{" "}
             <Link href="/auth/register" className="text-secondary">
-              Sign up
+              Inscrivez-vous
             </Link>
           </p>
-          <p className="mt-4">Or connect</p>
-          <div className="flex justify-center space-x-4 mt-2">
-            <Button variant="secondary" className="p-2">
-              <FaFacebook className="w-6 h-6 text-white" />
-            </Button>
-            <Button variant="secondary" className="p-2">
-              <FaGoogle className="w-6 h-6 text-white" />
-            </Button>
-            <Button variant="secondary" className="p-2">
-              <FaTwitter className="w-6 h-6 text-white" />
-            </Button>
-          </div>
         </div>
       </div>
     </div>
