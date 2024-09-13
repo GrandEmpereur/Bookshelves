@@ -127,7 +127,7 @@ const Register = () => {
       // Vérification du code OTP via le service d'authentification
       console.log("values", userEmail, "values.verificationCode", values.verificationCode);
       await emailVerificationOtp(userEmail, values.verificationCode);
-      router.push("/auth/login");
+      router.push("/onboarding-register");
     } catch (error: unknown) {
       const errorMessage =
         (error as { response?: { data?: { message: string } } }).response?.data

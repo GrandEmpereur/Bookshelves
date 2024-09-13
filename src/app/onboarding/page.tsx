@@ -1,5 +1,3 @@
-// src/app/onboarding/page.tsx
-
 "use client";
 
 import React from 'react';
