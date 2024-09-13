@@ -1,8 +1,8 @@
 // context/AuthContext.tsx
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { login, register, logout } from '@/services/authService';
+import { login, register, logout, CurrentUser } from '@/services/authService';
 import { User } from '@/types/auth';
 
 interface AuthContextProps {
@@ -19,6 +19,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const router = useRouter();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const currentUser = await CurrentUser();
+                setUser(currentUser);
+                setIsAuthenticated(!!currentUser);
+            } catch (error) {
+                console.error('Erreur lors de la vérification de l\'utilisateur:', error);
+            }
+        };
+
+        fetchUser();
+    }, []);
 
     const loginUser = async (email: string, password: string) => {
         try {

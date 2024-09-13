@@ -9,10 +9,12 @@ import OnboardingSteps from "@components/client/auth/OnboardingSteps";
 const Register = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState(""); // Capture the user's password
   const router = useRouter();
 
   const handleNextStep = () => setCurrentStep(currentStep + 1);
   const handleEmailCapture = (email: string) => setUserEmail(email);
+  const handlePasswordCapture = (password: string) => setUserPassword(password); // Capture the password
   const handleOnboardingComplete = () => {
     router.push("/feed");
   };
@@ -20,13 +22,21 @@ const Register = () => {
   return (
     <div className="relative flex items-center justify-center w-full h-screen bg-background text-foreground px-5">
       {currentStep === 0 && (
-        <RegisterStep onNext={handleNextStep} onEmailCapture={handleEmailCapture} />
+        <RegisterStep
+          onNext={handleNextStep}
+          onEmailCapture={handleEmailCapture}
+          onPasswordCapture={handlePasswordCapture}
+        />
       )}
       {currentStep === 1 && (
         <OtpVerificationStep onNext={handleNextStep} email={userEmail} />
       )}
       {currentStep === 2 && (
-        <OnboardingSteps onComplete={handleOnboardingComplete} email={userEmail} />
+        <OnboardingSteps
+          onComplete={handleOnboardingComplete}
+          email={userEmail}
+          password={userPassword}
+        />
       )}
     </div>
   );

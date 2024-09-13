@@ -1,8 +1,11 @@
+// components/client/auth/OnboardingSteps.tsx
+
 "use client";
 
 import React, { useState } from "react";
 import { UpdateUserPreferences, UpdateUserPreferencesGenres } from "@/services/profileService";
 import OnbordingAfterRegisterSteps from "@components/client/auth/OnbordingAfterRegisterSteps";
+import { login } from "@/services/authService";
 
 const onboardingSteps = [
     {
@@ -64,7 +67,15 @@ const onboardingSteps = [
     },
 ];
 
-const OnboardingSteps = ({ onComplete, email }: { onComplete: () => void; email: string }) => {
+const OnboardingSteps = ({
+    onComplete,
+    email,
+    password, // Capture the password
+}: {
+    onComplete: () => void;
+    email: string;
+    password: string;
+}) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedPreferences, setSelectedPreferences] = useState({
         usagePurpose: "",
@@ -89,13 +100,6 @@ const OnboardingSteps = ({ onComplete, email }: { onComplete: () => void; email:
             }));
         }
 
-        if (current === "favoriteGenres") {
-            setSelectedPreferences((prev) => ({
-                ...prev,
-                genres: selectedOption as string[],
-            }));
-        }
-
         if (currentStep < onboardingSteps.length - 1) {
             setCurrentStep(currentStep + 1);
         } else {
@@ -112,29 +116,29 @@ const OnboardingSteps = ({ onComplete, email }: { onComplete: () => void; email:
 
     const sendPreferencesToDB = async () => {
         try {
-            if (selectedPreferences.genres.length === 0) {
-                throw new Error("Les genres doivent être un tableau non vide.");
-            }
             await UpdateUserPreferences(
                 email,
                 selectedPreferences.readingHabit,
                 selectedPreferences.usagePurpose
             );
             await UpdateUserPreferencesGenres(email, selectedPreferences.genres);
-            onComplete();
+            const test = await login(email, password); // Use the captured password to log the user in
+            console.log("User logged in:", test);
+            onComplete(); // Redirect to /feed
         } catch (error) {
             console.error("Failed to save preferences:", error);
-            alert((error as Error).message);
         }
     };
 
     return (
-        <OnbordingAfterRegisterSteps
-            step={onboardingSteps[currentStep]}
-            onNext={handleNext}
-            onGenreSelect={handleGenreSelection}
-            isLastStep={currentStep === onboardingSteps.length - 1}
-        />
+        <>
+            <OnbordingAfterRegisterSteps
+                step={onboardingSteps[currentStep]}
+                onNext={handleNext}
+                onGenreSelect={handleGenreSelection}
+                isLastStep={currentStep === onboardingSteps.length - 1}
+            />
+        </>
     );
 };
 

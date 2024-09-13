@@ -5,7 +5,6 @@ import { AuthResponse, ApiError, User } from '@/types/auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
-// Fonction de gestion des erreurs pour les appels API
 const handleApiError = (error: unknown): never => {
     if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ApiError>;
@@ -17,60 +16,46 @@ const handleApiError = (error: unknown): never => {
 
 export const login = async (email: string, password: string): Promise<AuthResponse> => {
     try {
-        const response = await axios.post<AuthResponse>(`${API_URL}/auth/login`, { email, password });
+        const response = await axios.post<AuthResponse>(
+            `${API_URL}/auth/login`,
+            { email, password },
+            { withCredentials: true } // Important pour la gestion des cookies de session
+        );
         return response.data;
     } catch (error) {
         handleApiError(error);
-        // Ajouter un return pour satisfaire le typage même si ce code ne devrait jamais être atteint
-        return {} as AuthResponse; // Cette ligne ne sera jamais exécutée mais est nécessaire pour le typage
+        return {} as AuthResponse;
     }
 };
 
 export const register = async (userData: Partial<User>): Promise<AuthResponse> => {
     try {
-        const response = await axios.post<AuthResponse>(`${API_URL}/auth/register`, userData);
+        const response = await axios.post<AuthResponse>(
+            `${API_URL}/auth/register`,
+            userData,
+            { withCredentials: true }
+        );
         return response.data;
     } catch (error) {
         handleApiError(error);
-        return {} as AuthResponse; // Assure le typage correct
-    }
-};
-
-export const resendVerificationEmail = async (email: string): Promise<{ message: string }> => {
-    try {
-        const response = await axios.post<{ message: string }>(`${API_URL}/auth/resend-verification-email`, { email });
-        return response.data;
-    } catch (error) {
-        handleApiError(error);
-        return { message: 'Une erreur est survenue' };
-    }
-}
-
-export const forgotPassword = async (email: string): Promise<{ message: string }> => {
-    try {
-        const response = await axios.post<{ message: string }>(`${API_URL}/auth/forgot-password`, { email });
-        return response.data;
-    } catch (error) {
-        handleApiError(error);
-        return { message: 'Une erreur est survenue' }; // Retour par défaut pour satisfaire le typage
-    }
-};
-
-export const emailVerificationOtp = async (email: string, code: string): Promise<{ message: string }> => {
-    try {
-        const response = await axios.post<{ message: string }>(`${API_URL}/auth/verify-email`, { email, code });
-        console.log(response);
-        return response.data;
-    } catch (error) {
-        handleApiError(error);
-        return { message: 'Une erreur est survenue' }; // Retour par défaut
+        return {} as AuthResponse;
     }
 };
 
 export const logout = async (): Promise<void> => {
     try {
-        await axios.post(`${API_URL}/auth/logout`);
+        await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
     } catch (error) {
         handleApiError(error);
+    }
+};
+
+export const CurrentUser = async (): Promise<User> => {
+    try {
+        const response = await axios.get<User>(`${API_URL}/user/profile`, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        return {} as User;
     }
 };

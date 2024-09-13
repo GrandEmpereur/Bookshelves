@@ -62,8 +62,8 @@ const OnbordingAfterRegisterSteps: React.FC<OnboardingStepProps> = ({
                         className={`flex justify-center items-center rounded-full text-center ${step.step === "favoriteGenres"
                                 ? selectedGenres.includes(option as string)
                                     ? "bg-primary text-white p-3"
-                                    : "bg-primary-300 text-black hover:bg-primary p-3"
-                                : "bg-white border text-black w-full p-8"
+                                    : "bg-primary-300 text-white hover:bg-primary  p-3"
+                                : "bg-white border text-black hover:text-white w-full p-8"
                             }`}
                         style={step.step === "favoriteGenres" ? { minWidth: "100px" } : {}}
                         onClick={() => handleOptionClick(option)}

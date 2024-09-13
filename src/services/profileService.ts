@@ -9,7 +9,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 const handleApiError = (error: unknown): never => {
     if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ApiError>;
-        console.log(axiosError);
         throw new Error(axiosError.response?.data.message);
     } else {
         throw new Error('Une erreur non gérée est survenue');
