@@ -36,7 +36,8 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   register as registerService,
   emailVerificationOtp,
-  forgotPassword as resendVerificationEmailService,
+  forgotPassword,
+  resendVerificationEmail as resendVerificationEmailService,
 } from "@/services/authService";
 
 const registerSchema = z.object({

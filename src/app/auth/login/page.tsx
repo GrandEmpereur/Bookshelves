@@ -74,8 +74,8 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center w-full h-screen bg-background text-foreground px-5 md:px-8 lg:px-12">
-      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl bg-white p-6 md:p-8 lg:p-12 rounded-lg shadow-lg">
+    <div className="relative flex items-center justify-center w-full h-screen text-foreground px-5 md:px-8 lg:px-12">
+      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl p-6 md:p-8 lg:p-12">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
@@ -118,7 +118,7 @@ const Login = () => {
                     <Input
                       placeholder="Email"
                       {...field}
-                      className="text-[16px] md:text-[18px] lg:text-[20px]"
+                      className="text-[16px] md:text-[16px] lg:text-[16px]"
                     />
                   </FormControl>
                   <FormMessage />
@@ -134,7 +134,7 @@ const Login = () => {
                   <FormControl>
                     <div className="relative">
                       <Input
-                        className="text-[16px] md:text-[18px] lg:text-[20px]"
+                        className="text-[16px] md:text-[16px] lg:text-[16px]"
                         type={showPassword ? "text" : "password"}
                         placeholder="Mot de passe"
                         {...field}

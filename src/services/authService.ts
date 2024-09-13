@@ -36,6 +36,16 @@ export const register = async (userData: Partial<User>): Promise<AuthResponse> =
     }
 };
 
+export const resendVerificationEmail = async (email: string): Promise<{ message: string }> => {
+    try {
+        const response = await axios.post<{ message: string }>(`${API_URL}/auth/resend-verification-email`, { email });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        return { message: 'Une erreur est survenue' };
+    }
+}
+
 export const forgotPassword = async (email: string): Promise<{ message: string }> => {
     try {
         const response = await axios.post<{ message: string }>(`${API_URL}/auth/forgot-password`, { email });

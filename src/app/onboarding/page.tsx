@@ -1,149 +1,16 @@
+// src/app/onboarding/page.tsx
+
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import gsap from 'gsap';
-import Link from 'next/link';
+import React from 'react';
+import OnboardingContainer from '@components/client/onboarding/OnboardingContainer';
 
-const onboardingScreens = [
-    {
-        image: '/img/onboarding/step1.png',
-        title: (
-            <>
-                Découvrez de nouveaux <span className="text-secondary">mondes</span>
-            </>
-        ),
-        description: 'Plongez dans l\'univers fascinant des livres et découvrez des histoires captivantes. Rejoignez notre communauté de passionnés pour explorer.',
-        buttonText: 'Suivant',
-    },
-    {
-        image: '/img/onboarding/step2.png',
-        title: (
-            <>
-                Partagez vos lectures <span className="text-secondary">préférées</span>
-            </>
-        ),
-        description: 'Échangez vos coups de cœur littéraires. Partagez vos avis, vos recommandations et découvrez de nouveaux livres grâce aux suggestions de notre communauté.',
-        buttonText: 'Suivant',
-    },
-    {
-        image: '/img/onboarding/step3.png',
-        title: (
-            <>
-                Discutez avec d'autres <span className="text-secondary">passionnés</span>
-            </>
-        ),
-        description: 'Engagez-vous dans des discussions passionnantes avec d\'autres amateurs de littérature. Partagez vos réflexions.',
-        buttonText: 'Commencer',
-    },
-];
-
-const OnboardingScreen: React.FC = () => {
-    const [currentScreen, setCurrentScreen] = useState(0);
-    const router = useRouter();
-    const containerRef = useRef<HTMLDivElement>(null);
-    const titleRef = useRef<HTMLHeadingElement>(null);
-    const descriptionRef = useRef<HTMLParagraphElement>(null);
-    const buttonRef = useRef<HTMLButtonElement>(null);
-    const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-    useEffect(() => {
-        const tl = gsap.timeline();
-        tl.fromTo(
-            containerRef.current,
-            { opacity: 0 },
-            { opacity: 1, duration: 1, ease: 'power3.out' }
-        )
-            .fromTo(
-                titleRef.current,
-                { opacity: 0 },
-                { opacity: 1, duration: 1, ease: 'power3.out' },
-                "-=0.5"
-            )
-            .fromTo(
-                descriptionRef.current,
-                { opacity: 0 },
-                { opacity: 1, duration: 1, ease: 'power3.out' },
-                "-=0.5"
-            )
-            .fromTo(
-                buttonRef.current,
-                { y: 20, opacity: 0 },
-                { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
-                "-=0.5"
-            )
-            .fromTo(
-                dotRefs.current,
-                { scale: 1, opacity: 0.5 },
-                { scale: (index) => (index === currentScreen ? 1.2 : 1), opacity: 1, duration: 0.5, ease: 'power3.out' },
-                "-=1"
-            );
-    }, [currentScreen]);
-
-    const handleNext = () => {
-        if (currentScreen < onboardingScreens.length - 1) {
-            setCurrentScreen(currentScreen + 1);
-        } else {
-            gsap.to(containerRef.current, {
-                opacity: 0,
-                duration: 0.5,
-                onComplete: () => {
-                    router.push('/auth/login');
-                }
-            });
-        }
-    };
-
-    const handleSkip = () => {
-        gsap.to(containerRef.current, {
-            opacity: 0,
-            duration: 0.5,
-            onComplete: () => {
-                router.push('/auth/login');
-            }
-        });
-    };
-
+const OnboardingPage: React.FC = () => {
     return (
-        <div className="relative flex items-center justify-center w-full h-screen bg-white text-black">
-            <div className='absolute top-0 left-0 w-full h-[50vh] md:h-[60vh] lg:h-[70vh]'>
-                <Image
-                    src={onboardingScreens[currentScreen].image}
-                    layout="fill"
-                    objectFit="cover"
-                    alt="Onboarding image"
-                />
-            </div>
-            <div ref={containerRef} className="flex flex-col items-center w-full max-w-md p-4 gap-y-6 pt-[60vh] md:pt-[65vh] lg:pt-[75vh]">
-                <div className="absolute top-12 right-4 md:right-12 flex justify-end">
-                    <Button variant={'link'} className="text-sm" onClick={handleSkip}>Passer</Button>
-                </div>
-                <h2 className="text-2xl font-bold text-center w-full" ref={titleRef}>
-                    {onboardingScreens[currentScreen].title}
-                    <div className="mt-2">
-                        <Image src="/underline.svg" width={62.92} height={10.3} alt="Wide SVG" />
-                    </div>
-                </h2>
-                <p className="text-center text-gray-600" ref={descriptionRef}>
-                    {onboardingScreens[currentScreen].description}
-                </p>
-                <div className="flex justify-center gap-x-2 mt-4">
-                    {onboardingScreens.map((_, index) => (
-                        <div
-                            key={index}
-                            ref={(el) => { dotRefs.current[index] = el; }}
-                            className={`h-[7px] rounded-full ${index === currentScreen ? 'w-[35px] bg-primary' : 'w-[13px] bg-primary-500'}`}
-                        ></div>
-                    ))}
-                </div>
-                <Button className="bg-primary text-white w-full" size={'lg'} onClick={handleNext} ref={buttonRef}>
-                    {onboardingScreens[currentScreen].buttonText}
-                </Button>
-            </div>
+        <div className="flex items-center justify-center w-full h-screen bg-white">
+            <OnboardingContainer />
         </div>
     );
 };
 
-export default OnboardingScreen;
+export default OnboardingPage;

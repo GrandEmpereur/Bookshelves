@@ -1,5 +1,4 @@
 import type { CapacitorConfig } from '@capacitor/cli';
-import path from "path";
 
 const config: CapacitorConfig = {
   appId: 'com.example.app',
