@@ -9,7 +9,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 const handleApiError = (error: unknown): never => {
     if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ApiError>;
-        throw new Error(axiosError.message || 'Une erreur inconnue est survenue');
+        throw new Error(axiosError.response?.data.message || 'Une erreur inconnue est survenue');
     } else {
         throw new Error('Une erreur non gérée est survenue');
     }
