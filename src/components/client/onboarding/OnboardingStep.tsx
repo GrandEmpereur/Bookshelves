@@ -107,7 +107,7 @@ const OnboardingSteps: React.FC<OnboardingStepProps> = ({
                         </span>
                     ))}
                     {/* Ajoutez un SVG ou une image en dessous si nécessaire */}
-                    <div className="mt-2">
+                    <div className="mt-4 relative left-40">
                         <Image src="/underline.svg" width={62.92} height={10.3} alt="Wide SVG" />
                     </div>
                 </h2>
