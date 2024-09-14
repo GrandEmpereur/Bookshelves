@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import gsap from 'gsap';
+import { Badge } from '@/components/ui/badge';
 
 interface OnboardingStepProps {
     step: {
@@ -71,9 +72,12 @@ const OnboardingSteps: React.FC<OnboardingStepProps> = ({
             );
     }, [step, currentIndex]);
 
+    // Define the position of the underline based on the current step
+    const underlinePosition = currentIndex === 0 ? "left-[145px]" : currentIndex === 1 ? "left-[90px]" : "left-[95px]";
+
     return (
         <div ref={containerRef} className="flex flex-col items-center w-full max-w-md gap-y-6">
-            <div className="absolute top-0 left-0 w-full h-[55vh] md:h-[60vh] lg:h-[70vh]">
+            <div className="absolute top-0 left-0 w-full h-[52vh] md:h-[60vh] lg:h-[70vh]">
                 <Image
                     src={step.image}
                     layout="fill"
@@ -86,17 +90,17 @@ const OnboardingSteps: React.FC<OnboardingStepProps> = ({
                 />
             </div>
 
-            <div className="absolute top-10 right-4 flex justify-end">
-                <Button variant="link" className="text-sm" onClick={onSkip}>
+            <div className="absolute top-[70px] right-4 flex justify-end text-2xl">
+                <Badge variant={'default'} className="text-sm px-4" onClick={onSkip}>
                     Passer
-                </Button>
+                </Badge>
             </div>
 
-            <div className="pt-[50vh] md:pt-[65vh] lg:pt-[75vh] flex flex-col items-center gap-y-6">
+            <div className="pt-[45vh] md:pt-[65vh] lg:pt-[75vh] flex flex-col items-center px-[20px] gap-y-3">
                 <h2
-                    className="text-2xl font-bold text-center w-full mb-4 leading-tight"
+                    className="text-2xl font-heading font-bold text-center mb-4 leading-tight"
                     ref={titleRef}
-                    style={{ lineHeight: '1.2', marginBottom: '10px' }}
+                    style={{ lineHeight: '1.5', marginBottom: '10px', width: '250px' }}
                 >
                     {step.title.split(' ').map((word, index) => (
                         <span
@@ -106,12 +110,11 @@ const OnboardingSteps: React.FC<OnboardingStepProps> = ({
                             {word}{' '}
                         </span>
                     ))}
-                    {/* Ajoutez un SVG ou une image en dessous si nécessaire */}
-                    <div className="mt-4 relative left-40">
-                        <Image src="/underline.svg" width={62.92} height={10.3} alt="Wide SVG" />
+                    <div className={`mt-1 relative ${underlinePosition}`}>
+                        <Image src="/underline.svg" width={70} height={15} alt="Wide SVG" />
                     </div>
                 </h2>
-                <p className="text-center text-gray-600" ref={descriptionRef}>
+                <p className="text-center font-body text-gray-600" ref={descriptionRef}>
                     {step.subtitle}
                 </p>
                 <div className="flex justify-center gap-x-2 mt-4">
@@ -128,7 +131,7 @@ const OnboardingSteps: React.FC<OnboardingStepProps> = ({
                 </div>
 
                 <Button
-                    className="bg-primary text-white w-full"
+                    className="bg-primary text-white w-full mt-4 rounded-[16px]"
                     size="lg"
                     onClick={onNext}
                     ref={buttonRef}

@@ -9,13 +9,13 @@ const onboardingScreens = [
     {
         image: '/img/onboarding/step1.png',
         title: 'Découvrez de nouveaux mondes',
-        subtitle: 'Plongez dans l\'univers fascinant des livres et découvrez des histoires captivantes. Rejoignez notre communauté de passionnés pour explorer.',
+        subtitle: 'Plongez dans l\'univers fascinant des livres et découvrez des histoires captivantes. Rejoignez notre communauté.',
         buttonText: 'Suivant',
     },
     {
         image: '/img/onboarding/step2.png',
         title: 'Partagez vos lectures préférées',
-        subtitle: 'Échangez vos coups de cœur littéraires. Partagez vos avis, vos recommandations et découvrez de nouveaux livres grâce aux suggestions de notre communauté.',
+        subtitle: 'Partagez vos avis, vos recommandations et découvrez de nouveaux livres grâce aux suggestions de notre communauté',
         buttonText: 'Suivant',
     },
     {
