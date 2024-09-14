@@ -44,15 +44,25 @@ export const register = async (userData: Partial<User>): Promise<AuthResponse> =
 
 export const logout = async (): Promise<void> => {
     try {
-        await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+        await axios.delete(`${API_URL}/auth/logout`, { withCredentials: true });
     } catch (error) {
         handleApiError(error);
     }
 };
 
+export const CurrentSession = async (): Promise<AuthResponse> => {
+    try {
+        const response = await axios.get<AuthResponse>(`${API_URL}/auth/session`, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        return {} as AuthResponse;
+    }
+}
+
 export const CurrentUser = async (): Promise<User> => {
     try {
-        const response = await axios.get<User>(`${API_URL}/user/profile`, { withCredentials: true });
+        const response = await axios.get<User>(`${API_URL}/auth/session`, { withCredentials: true });
         return response.data;
     } catch (error) {
         handleApiError(error);

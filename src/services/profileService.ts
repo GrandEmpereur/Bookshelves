@@ -17,7 +17,7 @@ const handleApiError = (error: unknown): never => {
 
 export const UpdateUserPreferencesGenres = async (email: string, genres: string[]): Promise<AuthResponse> => {
     try {
-        const response = await axios.put<AuthResponse>(`${API_URL}/user/preferences/genres`, { email, genres });
+        const response = await axios.put<AuthResponse>(`${API_URL}/users/preferences/genres`, { email, genres });
         return response.data;
     } catch (error) {
         handleApiError(error);
@@ -27,7 +27,7 @@ export const UpdateUserPreferencesGenres = async (email: string, genres: string[
 
 export const UpdateUserPreferences = async (email: string, readingHabit: string, usagePurpose: string): Promise<AuthResponse> => {
     try {
-        const response = await axios.put<AuthResponse>(`${API_URL}/user/preferences`, { email, readingHabit, usagePurpose });
+        const response = await axios.put<AuthResponse>(`${API_URL}/users/preferences`, { email, readingHabit, usagePurpose });
         return response.data;
     } catch (error) {
         handleApiError(error);

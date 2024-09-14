@@ -19,9 +19,9 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp";
 import {
-    emailVerificationOtp,
-    resendVerificationEmail as resendVerificationEmailService,
-} from "@/services/authService";
+    EmailVerify,
+    ResendVerificationEmail as resendVerificationEmailService,
+} from "@services/authEmailServices";
 import { useState, useEffect } from "react";
 
 const verifySchema = z.object({
@@ -57,7 +57,7 @@ const OtpVerificationStep = ({
 
     const onVerifySubmit = async (values: z.infer<typeof verifySchema>) => {
         try {
-            await emailVerificationOtp(email, values.verificationCode);
+            await EmailVerify(email, values.verificationCode);
             onNext();
         } catch (error) {
             setOtpError(
