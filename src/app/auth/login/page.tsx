@@ -50,7 +50,8 @@ const Login = () => {
       <div className="w-full max-w-md md:max-w-lg lg:max-w-xl p-6 md:p-8 lg:p-12">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">Se connecter</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">Connectez-vous 
+            à votre compte</h1>
             <p className="text-center text-muted-foreground mb-6">Veuillez vous connecter pour continuer</p>
             {loginError && <p className="text-error text-center">{loginError}</p>}
             <FormField
@@ -91,7 +92,13 @@ const Login = () => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /><div className="text-end">
+              <p>
+                <Link href="/auth/forgot-password" className="text-secondary">
+                  Mot de passe oublié ?
+                </Link>
+              </p>
+            </div>
             <Button type="submit" className="w-full bg-primary text-primary-foreground py-3 md:py-4 lg:py-5">
               Se connecter
             </Button>

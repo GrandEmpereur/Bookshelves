@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CurrentUser } from "@/services/authService";
+import { logout } from "@/services/authService";
+import { Button } from "@/components/ui/button";
 
 const FeedPage: React.FC = () => {
   const [user, setUser] = useState<any | null>(null); // État pour stocker les informations de l'utilisateur
@@ -22,6 +24,15 @@ const FeedPage: React.FC = () => {
 
     fetchCurrentUser();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUser(null);
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion :", error);
+    }
+  }
 
   console.log(user);
 
@@ -48,6 +59,7 @@ const FeedPage: React.FC = () => {
         <h1 className="text-2xl font-bold mb-4">Bienvenue, {user.data.username}!</h1>
         <p className="mb-2">Email : {user.data.email}</p>
         <p className="mb-4">Date de naissance : {user.data.birthDate}</p>
+        <Button onClick={handleLogout}>Déconnexion</Button>
         {/* Ajoutez d'autres informations de l'utilisateur ici */}
       </div>
     </div>

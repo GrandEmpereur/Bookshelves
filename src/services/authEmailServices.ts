@@ -45,7 +45,7 @@ export const ResendVerificationEmail = async (email: string): Promise<AuthRespon
 export const ForgotPassword = async (email: string): Promise<AuthResponse> => {
     try {
         const response = await axios.post<AuthResponse>(
-            `${API_URL}/auth/password/forgot`,
+            `${API_URL}/auth/email/forgot-password`,
             { email },
             { withCredentials: true }
         );
@@ -70,11 +70,11 @@ export const PasswordVerify = async (email: string, otp: string): Promise<AuthRe
     }
 }
 
-export const ResetPassword = async (userId: string, newPassword: string): Promise<AuthResponse> => {
+export const ResetPassword = async (email: string, newPassword: string): Promise<AuthResponse> => {
     try {
         const response = await axios.post<AuthResponse>(
-            `${API_URL}/auth/password/reset`,
-            { userId, newPassword },
+            `${API_URL}/auth/email/reset-password`,
+            { email, newPassword },
             { withCredentials: true }
         );
         return response.data;
