@@ -97,7 +97,7 @@ const RegisterStep = ({
                 <FormItem>
                   <FormLabel>Nom d'utilisateur</FormLabel>
                   <FormControl>
-                    <Input placeholder="Pseudonyme" {...field} />
+                    <Input placeholder="Pseudonyme" {...field} className='text-[16px]' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -110,7 +110,7 @@ const RegisterStep = ({
                 <FormItem>
                   <FormLabel>Adresse email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Adresse email" {...field} />
+                    <Input placeholder="Adresse email" {...field} className='text-[16px]' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -125,6 +125,7 @@ const RegisterStep = ({
                   <FormControl>
                     <Input
                       placeholder="JJ/MM/AAAA"
+                      className='text-[16px]'
                       {...field}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
@@ -144,6 +145,7 @@ const RegisterStep = ({
                       <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="Mot de passe"
+                        className='text-[16px]'
                         {...field}
                       />
                       <button

@@ -1,5 +1,3 @@
-// components/client/auth/forgot-password/OtpVerification.tsx
-
 "use client";
 
 import React from "react";
@@ -7,14 +5,21 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { PasswordVerify } from "@/services/authEmailServices";
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSeparator,
+    InputOTPSlot,
+} from "@/components/ui/input-otp";
 
+// Define the OTP schema with a 6-character constraint
 const otpSchema = z.object({
-    otp: z.string().min(4, "Le code OTP doit avoir au moins 4 chiffres"),
+    otp: z.string().length(6, "Le code OTP doit avoir exactement 6 chiffres"),
 });
 
+// OTP Verification Step Component
 const OtpVerificationStep = ({ onNext, email }: { onNext: () => void; email: string }) => {
     const form = useForm<z.infer<typeof otpSchema>>({
         resolver: zodResolver(otpSchema),
@@ -23,13 +28,14 @@ const OtpVerificationStep = ({ onNext, email }: { onNext: () => void; email: str
         },
     });
 
+    // Handle form submission
     const onSubmit = async (values: z.infer<typeof otpSchema>) => {
         try {
-            await PasswordVerify(email, values.otp); // Vérifie l'OTP avec l'email
-            onNext(); // Passe à l'étape suivante
+            await PasswordVerify(email, values.otp); // Verify the OTP with the email
+            onNext(); // Proceed to the next step
         } catch (error) {
             console.error("Erreur lors de la vérification du code OTP :", error);
-            form.reset();
+            form.reset(); // Reset form on error
         }
     };
 
@@ -46,10 +52,28 @@ const OtpVerificationStep = ({ onNext, email }: { onNext: () => void; email: str
                         control={form.control}
                         name="otp"
                         render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Code OTP</FormLabel>
+                            <FormItem className="flex flex-col items-center">
+                                <FormLabel className="text-lg">Code OTP</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Code OTP" {...field} />
+                                    <InputOTP
+                                        value={field.value || ""}
+                                        onChange={field.onChange}
+                                        onBlur={field.onBlur}
+                                        maxLength={6}
+                                        className="flex justify-center gap-x-2"
+                                    >
+                                        <InputOTPGroup>
+                                            <InputOTPSlot index={0} />
+                                            <InputOTPSlot index={1} />
+                                            <InputOTPSlot index={2} />
+                                        </InputOTPGroup>
+                                        <InputOTPSeparator />
+                                        <InputOTPGroup>
+                                            <InputOTPSlot index={3} />
+                                            <InputOTPSlot index={4} />
+                                            <InputOTPSlot index={5} />
+                                        </InputOTPGroup>
+                                    </InputOTP>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

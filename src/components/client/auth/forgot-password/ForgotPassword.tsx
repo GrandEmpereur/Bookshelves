@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ForgotPassword as forgotPasswordServices } from "@/services/authEmailServices";
+import { Mail } from "lucide-react";
 
 const forgotPasswordSchema = z.object({
     email: z.string().email("Adresse email invalide"),
@@ -58,7 +59,7 @@ const ForgotPassword = ({ onNext, onEmailCapture }: { onNext: () => void; onEmai
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Adresse email" {...field} />
+                                        <Input placeholder="Adresse email" {...field} className='text-[16px]' />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -71,10 +72,14 @@ const ForgotPassword = ({ onNext, onEmailCapture }: { onNext: () => void; onEmai
 
             <Dialog open={openDialog} onOpenChange={handleDialogClose}>
                 <DialogContent className="flex flex-col items-center text-center gap-y-4">
-                    <DialogHeader>
+                    <DialogHeader className="flex flex-col justify-center items-center gap-y-2">
+                        <div className="bg-primary rounded-full p-4">
+                            <Mail className="text-white" size={24} />
+                        </div>
                         <DialogTitle>Vérifiez vos emails</DialogTitle>
-                        <DialogDescription>
-                            Nous avons envoyé un code de réinitialisation à votre adresse email.
+                        <DialogDescription className="text-center">
+                            Nous avons envoyé les instructions de récupération à votre
+                            adresse email.
                         </DialogDescription>
                     </DialogHeader>
                 </DialogContent>

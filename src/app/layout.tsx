@@ -30,6 +30,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
       </head>
+
       <body className="font-body">
         <AuthProvider>
           <main className="flex flex-col min-h-screen">

@@ -30,8 +30,8 @@ const ResetPassword = ({ onResetComplete, email }: { onResetComplete: () => void
 
     const onSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
         try {
-            await resetPassword(email, values.password); // Réinitialise le mot de passe avec l'email
-            onResetComplete(); // Redirige vers la page de login
+            await resetPassword(email, values.password);
+            onResetComplete();
         } catch (error) {
             console.error("Erreur lors de la réinitialisation du mot de passe :", error);
             form.reset();
@@ -51,7 +51,7 @@ const ResetPassword = ({ onResetComplete, email }: { onResetComplete: () => void
                             <FormItem>
                                 <FormLabel>Nouveau mot de passe</FormLabel>
                                 <FormControl>
-                                    <Input type="password" placeholder="Nouveau mot de passe" {...field} />
+                                    <Input type="password" placeholder="Nouveau mot de passe" {...field} className="text-[16px]" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -64,7 +64,7 @@ const ResetPassword = ({ onResetComplete, email }: { onResetComplete: () => void
                             <FormItem>
                                 <FormLabel>Confirmer le mot de passe</FormLabel>
                                 <FormControl>
-                                    <Input type="password" placeholder="Confirmer le mot de passe" {...field} />
+                                    <Input type="password" placeholder="Confirmer le mot de passe" {...field} className="text-[16px]" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

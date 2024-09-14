@@ -61,7 +61,7 @@ const Login = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Email" {...field} />
+                    <Input placeholder="Email" {...field} className='text-[16px]' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -78,6 +78,7 @@ const Login = () => {
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Mot de passe"
+                        className='text-[16px]'
                         {...field}
                       />
                       <button
@@ -94,7 +95,7 @@ const Login = () => {
               )}
             /><div className="text-end">
               <p>
-                <Link href="/auth/forgot-password" className="text-secondary">
+                <Link href="/auth/forgot-password" className="text-secondary text-sm">
                   Mot de passe oublié ?
                 </Link>
               </p>
@@ -105,7 +106,7 @@ const Login = () => {
           </form>
         </Form>
         <div className="mt-6 text-center">
-          <p>
+          <p className='w-[300px]'>
             Vous n'avez pas de compte ?{' '}
             <Link href="/auth/register" className="text-secondary">
               Inscrivez-vous
