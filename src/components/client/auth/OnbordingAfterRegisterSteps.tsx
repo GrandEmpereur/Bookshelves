@@ -47,9 +47,9 @@ const OnbordingAfterRegisterSteps: React.FC<OnboardingStepProps> = ({
     };
 
     return (
-        <div className="flex flex-col items-center gap-y-4 px-4">
-            <h2 className="text-xl font-bold text-center sm:text-2xl">{step.title}</h2>
-            <p className="text-center text-muted-foreground">{step.description}</p>
+        <div className="flex flex-col items-center gap-y-6 px-4">
+            <h2 className="text-2xl font-bold text-center sm:text-2xl">{step.title}</h2>
+            <p className="text-sm text-center text-muted-foreground">{step.description}</p>
             <div
                 className={`flex ${step.step === "favoriteGenres"
                         ? "flex-wrap gap-2 justify-center"
