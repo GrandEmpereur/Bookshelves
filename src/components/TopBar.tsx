@@ -15,13 +15,13 @@ const TopBar = () => {
                     </Link>
 
                     <div className='flex gap-x-[5px]'>
-                        <Link href="#">
+                        <Link href="/notifications">
                             <Button size={'icon'} variant={'icon'}>
                                 <Bell size={20} stroke='#2f5046'/>
                             </Button>
                         </Link>
 
-                        <Link href="#">
+                        <Link href="/messages">
                             <Button size={'icon'} variant={'icon'}>
                                 <SendHorizontal size={20} stroke='#2f5046' />
                             </Button>
