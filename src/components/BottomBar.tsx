@@ -18,7 +18,7 @@ const BottomBar = () => {
             <Search size={24} className=" text-white" />
           </Link>
         </div>
-        <Link href="/communities" className="flex flex-col items-center">
+        <Link href="/community" className="flex flex-col items-center">
           <MessagesSquare size={24} />
           <span className="text-xs mt-1">Communautés</span>
         </Link>
