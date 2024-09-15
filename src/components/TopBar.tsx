@@ -51,7 +51,7 @@ const TopBar: React.FC = () => {
                     );
                 case 'settings':
                     return (
-                        <Link href="/settings" key={index}>
+                        <Link href="/profile/settings" key={index}>
                             <Button size="icon" variant="icon">
                                 <Settings size={20} stroke="#2f5046" />
                             </Button>
