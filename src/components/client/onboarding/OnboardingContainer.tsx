@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import OnboardingSteps from './OnboardingStep';
+import { Preferences } from '@capacitor/preferences'; // Importation de l'API Preferences
 
 const onboardingScreens = [
     {
@@ -31,10 +32,13 @@ const OnboardingContainer: React.FC = () => {
     const router = useRouter();
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (currentStep < onboardingScreens.length - 1) {
             setCurrentStep(currentStep + 1);
         } else {
+            // Marquer l'onboarding comme complété une fois que l'utilisateur a terminé toutes les étapes
+            await Preferences.set({ key: 'hasCompletedOnboarding', value: 'true' });
+
             gsap.to(containerRef.current, {
                 opacity: 0,
                 duration: 0.5,
@@ -45,7 +49,10 @@ const OnboardingContainer: React.FC = () => {
         }
     };
 
-    const handleSkip = () => {
+    const handleSkip = async () => {
+        // Marquer l'onboarding comme complété si l'utilisateur décide de passer
+        await Preferences.set({ key: 'hasCompletedOnboarding', value: 'true' });
+
         gsap.to(containerRef.current, {
             opacity: 0,
             duration: 0.5,
@@ -65,8 +72,8 @@ const OnboardingContainer: React.FC = () => {
                 onNext={handleNext}
                 onSkip={handleSkip}
                 isLastStep={currentStep === onboardingScreens.length - 1}
-                currentIndex={currentStep} // Ajout pour le suivi de l'étape actuelle
-                totalSteps={onboardingScreens.length} // Ajout pour le nombre total d'étapes
+                currentIndex={currentStep}
+                totalSteps={onboardingScreens.length}
             />
         </div>
     );
