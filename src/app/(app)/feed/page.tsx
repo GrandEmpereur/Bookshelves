@@ -5,10 +5,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CurrentUser } from "@/services/authService";
 import { logout } from "@/services/authService";
 import { Button } from "@/components/ui/button";
+import Feed from "@components/client/post/Feed";
 
 const FeedPage: React.FC = () => {
-  const [user, setUser] = useState<any | null>(null); // État pour stocker les informations de l'utilisateur
-  const [loading, setLoading] = useState<boolean>(true); // État pour gérer le chargement
+  const [user, setUser] = useState<any | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -32,12 +33,9 @@ const FeedPage: React.FC = () => {
     } catch (error) {
       console.error("Erreur lors de la déconnexion :", error);
     }
-  }
-
-  console.log(user);
+  };
 
   if (loading) {
-    // Affiche les Skeletons si les données sont en cours de chargement
     return (
       <div className="flex flex-col gap-6 px-4">
         <Skeleton className="w-full h-10 mb-4 rounded" />
@@ -49,19 +47,14 @@ const FeedPage: React.FC = () => {
   }
 
   if (!user) {
-    // Affichage si l'utilisateur n'est pas connecté ou s'il y a une erreur
     return <p>Impossible de récupérer les informations de l'utilisateur. Veuillez vous reconnecter.</p>;
   }
 
   return (
-    <div className="flex flex-col gap-6 px-4">
-      <div>
-        <h1 className="text-2xl font-bold mb-4">Bienvenue, {user.data.username}!</h1>
-        <p className="mb-2">Email : {user.data.email}</p>
-        <p className="mb-4">Date de naissance : {user.data.birthDate}</p>
-        <Button onClick={handleLogout}>Déconnexion</Button>
-        {/* Ajoutez d'autres informations de l'utilisateur ici */}
-      </div>
+    <div className="flex flex-col gap-y-6 ">
+      {Array.from({ length: 10 }).map((_, index) => (
+        <Feed key={index} /> 
+      ))}
     </div>
   );
 };

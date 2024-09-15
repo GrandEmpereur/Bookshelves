@@ -57,6 +57,7 @@ const config: Config = {
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
+          600: 'hsl(var(--accent-000))',
           100: '#F9F1EB',
           200: '#F1DDCD',
           300: '#EED6C3',

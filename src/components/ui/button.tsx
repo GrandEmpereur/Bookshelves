@@ -14,6 +14,7 @@ const buttonVariants = cva(
         outlineActive: "bg-accent-200 rounded-full py-1 px-2.5 w-fit border-2 text-secondary-700 border-secondary-700",
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
+        icon: "",
         link: "text-primary underline-offset-4 hover:underline",
         blur: "blur-sm",
         round: "rounded-full",
