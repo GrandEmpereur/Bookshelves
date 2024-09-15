@@ -1,0 +1,113 @@
+{
+    "/profile": {
+        "showBackButton": true,
+        "title": {
+            "text": "Profile",
+            "icon": "qr-code"
+        },
+        "rightIcons": [
+            "settings"
+        ]
+    },
+    "/profile/settings": {
+        "showBackButton": true,
+        "title": {
+            "text": "Settings",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    },
+    "/profile/settings/edit": {
+        "showBackButton": true,
+        "title": {
+            "text": "Edit Profile",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    },
+    "/profile/settings/statistique": {
+        "showBackButton": true,
+        "title": {
+            "text": "Statistique",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    },
+    "/search": {
+        "showBackButton": true,
+        "title": {
+            "text": "Recherche",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    },
+    "/community": {
+        "showBackButton": true,
+        "title": {
+            "text": "Clubs",
+            "icon": ""
+        },
+        "rightIcons": [
+            "search"
+        ]
+    },
+    "/lists": {
+        "showBackButton": true,
+        "title": {
+            "text": "Libraire",
+            "icon": ""
+        },
+        "rightIcons": [
+            "search"
+        ]
+    },
+    "/feed": {
+        "showBackButton": false,
+        "title": {
+            "text": "",
+            "icon": ""
+        },
+        "rightIcons": [
+            "notifications",
+            "messages"
+        ]
+    },
+    "/feed/new-post": {
+        "showBackButton": false,
+        "title": {
+            "text": "Nouveau Post",
+            "icon": ""
+        },
+        "rightIcons": [
+            "messages"
+        ]
+    },
+    "/messages": {
+        "showBackButton": true,
+        "title": {
+            "text": "Messages",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    },
+    "/notifications": {
+        "showBackButton": true,
+        "title": {
+            "text": "Notifications",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    }
+}
