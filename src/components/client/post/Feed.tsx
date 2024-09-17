@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Heart, MessageSquare, Bookmark, BookmarkCheck } from "lucide-react";
+import { Heart, MessageSquare, Bookmark } from "lucide-react";
 import { getPosts, toggleLike, toggleFavorite } from "@/services/postService";
 import { Post } from "@/types/post";
 //@ts-ignore
 import { DateTime } from "luxon";
+import FloatingActionButton from "@/components/FloatingActionButton";
 
 // Function to generate a random fallback image URL
 const getRandomImage = (width: number, height: number) =>
@@ -18,7 +20,11 @@ const getRandomImage = (width: number, height: number) =>
 
 const Feed: React.FC = () => {
     const [posts, setPosts] = useState<Post[]>([]);
+    const router = useRouter();
     const avatars = [
+        getRandomImage(40, 40),
+        getRandomImage(40, 40),
+        getRandomImage(40, 40),
         getRandomImage(40, 40),
         getRandomImage(40, 40),
         getRandomImage(40, 40),
@@ -29,7 +35,13 @@ const Feed: React.FC = () => {
         const fetchPosts = async () => {
             try {
                 const response = await getPosts();
-                setPosts(response.data);
+                // Sort posts by createdAt in descending order (most recent first)
+                const sortedPosts = response.data.sort(
+                    (a: Post, b: Post) =>
+                        DateTime.fromISO(b.createdAt).toMillis() -
+                        DateTime.fromISO(a.createdAt).toMillis()
+                );
+                setPosts(sortedPosts);
             } catch (error) {
                 console.error("Error fetching posts:", error);
             }
@@ -104,21 +116,21 @@ const Feed: React.FC = () => {
         const diffInSeconds = now.diff(postDate, "seconds").seconds;
 
         if (diffInSeconds < 60) {
-            // Less than 60 seconds
             return `${Math.floor(diffInSeconds)}s`;
         } else if (diffInSeconds < 3600) {
-            // Less than 60 minutes
             return `${Math.floor(diffInSeconds / 60)}m`;
         } else if (diffInSeconds < 86400) {
-            // Less than 24 hours
             return `${Math.floor(diffInSeconds / 3600)}h`;
         } else if (diffInSeconds < 604800) {
-            // Less than 7 days
             return `il y a ${Math.floor(diffInSeconds / 86400)}j`;
         } else {
-            // More than 7 days, show as a formatted date
             return postDate.toFormat("dd/MM/yyyy");
         }
+    };
+
+    // Function to handle the click of the FloatingActionButton
+    const handleAddPost = () => {
+        router.push("/feed/new-post");
     };
 
     return (
@@ -162,13 +174,11 @@ const Feed: React.FC = () => {
 
                     {/* Post Content */}
                     <div className="mb-4">
-                        <p className="text-gray-800 mb-4">{post.content}</p>
-
-                        {/* Post Image */}
+                        <p className="text-gray-800 mb-4 break-words">{post.content}</p>
                         {post.media && post.media.length > 0 ? (
                             <div className="overflow-hidden rounded-md">
                                 <img
-                                    src={post.media[0].url} // Use the real media URL from the post
+                                    src={post.media[0].url}
                                     alt="Post content"
                                     className="object-cover w-full h-auto"
                                 />
@@ -176,15 +186,13 @@ const Feed: React.FC = () => {
                         ) : (
                             <div className="overflow-hidden rounded-md">
                                 <img
-                                    src={getRandomImage(600, 400)} // Fallback to random image
+                                    src={getRandomImage(600, 400)}
                                     alt="Post content"
                                     className="object-cover w-full h-auto"
                                 />
                             </div>
                         )}
                     </div>
-
-                    <Separator className="my-4" />
 
                     {/* Post Footer */}
                     <div className="flex justify-between items-center">
@@ -193,10 +201,11 @@ const Feed: React.FC = () => {
                                 variant="icon"
                                 size="sm"
                                 onClick={() => handleLikeToggle(post.id)}
-                                className="transition-all duration-300 ease-in-out transform sm:hover:scale-110"
+                                className="transition-all duration-300 ease-in-out transform"
                             >
                                 <Heart
-                                    className={`transition-all duration-300 ease-in-out ${post.isLiked ? "text-red-500" : "text-primary"}`}
+                                    className={`transition-all duration-300 ease-in-out ${post.isLiked ? "text-red-500" : "text-primary"
+                                        }`}
                                     style={{
                                         fill: post.isLiked ? "red" : "transparent",
                                     }}
@@ -223,8 +232,13 @@ const Feed: React.FC = () => {
                             </Button>
                         </div>
                     </div>
+
+                    <Separator className="my-4" />
+
                 </div>
             ))}
+
+            <FloatingActionButton onClick={handleAddPost} />
         </div>
     );
 };

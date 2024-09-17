@@ -1,5 +1,9 @@
 import axios, { AxiosError } from 'axios';
-import { ApiResponse, Post, Comment, Like, Favorite, ApiError } from '@/types/post';
+import { ApiResponse, Post, ApiError } from '@/types/post';
+import { Like } from '@/types/like';
+import { Comment } from '@/types/comment';
+import { Favorite } from '@/types/favorite';
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 console.log(API_URL);

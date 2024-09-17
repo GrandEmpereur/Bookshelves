@@ -81,13 +81,13 @@
         ]
     },
     "/feed/new-post": {
-        "showBackButton": false,
+        "showBackButton": true,
         "title": {
             "text": "Nouveau Post",
             "icon": ""
         },
         "rightIcons": [
-            "messages"
+            "Send"
         ]
     },
     "/messages": {
