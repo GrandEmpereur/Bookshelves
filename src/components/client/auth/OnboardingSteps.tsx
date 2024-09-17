@@ -116,19 +116,28 @@ const OnboardingSteps = ({
 
     const sendPreferencesToDB = async () => {
         try {
+            // Save user preferences to the database
             await UpdateUserPreferences(
                 email,
                 selectedPreferences.readingHabit,
                 selectedPreferences.usagePurpose
             );
             await UpdateUserPreferencesGenres(email, selectedPreferences.genres);
-            const test = await login(email, password); // Use the captured password to log the user in
-            console.log("User logged in:", test);
-            onComplete(); // Redirect to /feed
+
+            const response = await login(email, password); // Use the captured password to log the user in
+
+            if (response) {
+                console.log("User logged in successfully:", response);
+                onComplete();
+            } else {
+                console.error("Login failed:", response);
+            }
         } catch (error) {
-            console.error("Failed to save preferences:", error);
+            console.error("Failed to save preferences or log in:", error);
+            // Optionally, display an error message to the user
         }
     };
+
 
     return (
         <>

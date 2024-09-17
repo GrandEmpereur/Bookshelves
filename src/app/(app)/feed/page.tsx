@@ -2,9 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CurrentUser } from "@/services/authService";
+import { CurrentUser } from "@/services/usersServices";
 import { logout } from "@/services/authService";
-import { Button } from "@/components/ui/button";
 import Feed from "@components/client/post/Feed";
 
 const FeedPage: React.FC = () => {

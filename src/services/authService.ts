@@ -1,5 +1,3 @@
-// services/authService.ts
-
 import axios, { AxiosError } from 'axios';
 import { AuthResponse, ApiError, User } from '@/types/auth';
 

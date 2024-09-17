@@ -16,11 +16,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const checkStatus = async () => {
-      // Effectue les vérifications avant l'animation
-      // set hasCompletedOnboarding to false to test the onboarding screen
-      // await Preferences.set({ key: 'hasCompletedOnboarding', value: 'false' });
-
-
       const { value } = await Preferences.get({ key: 'hasCompletedOnboarding' });
       console.log('hasCompletedOnboarding:', value);
 
@@ -32,11 +27,13 @@ const App: React.FC = () => {
       }
     };
 
-    console.log('redirectPath:', redirectPath);
-
     // Appel de la fonction de vérification
-    checkStatus().then(() => {
-      // Lance l'animation une fois les vérifications terminées
+    checkStatus();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    // Lancer l'animation uniquement lorsque le `redirectPath` est défini
+    if (redirectPath !== null) {
       gsap.timeline({
         onComplete: () => {
           // Redirige une fois l'animation terminée
@@ -55,8 +52,8 @@ const App: React.FC = () => {
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.5 }
         );
-    });
-  }, [isAuthenticated, router, redirectPath]);
+    }
+  }, [redirectPath, router]);
 
   return (
     <div className="flex items-center justify-center w-full h-screen bg-primary">

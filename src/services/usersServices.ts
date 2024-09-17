@@ -16,7 +16,7 @@ const handleApiError = (error: unknown): never => {
 
 export const CurrentUser = async (): Promise<User> => {
     try {
-        const response = await axios.get<User>(`${API_URL}/user/profile`, { withCredentials: true });
+        const response = await axios.get<User>(`${API_URL}/users/profile`, { withCredentials: true });
         return response.data;
     } catch (error) {
         handleApiError(error);

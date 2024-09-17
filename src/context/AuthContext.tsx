@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setUser(currentUser);
                 setIsAuthenticated(!!currentUser);
             } catch (error) {
-                console.error('Erreur lors de la vérification de l\'utilisateur:', error);
+                console.error("Erreur lors de la vérification de l'utilisateur:", error);
             }
         };
 
@@ -44,10 +44,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const loginUser = async (email: string, password: string) => {
         try {
-            const data = await login(email, password);
-            setUser(data.user);
+            const { data } = await login(email, password);
+            setUser(data!.user);
             setIsAuthenticated(true);
-            await Storage.set({ key: 'hasCompletedOnboarding', value: 'true' }); // Mark onboarding as complete
+            await Storage.set({ key: 'hasCompletedOnboarding', value: 'true' });
             router.push('/feed');
         } catch (error) {
             console.error('Erreur lors de la connexion:', (error as Error).message);
@@ -56,12 +56,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const registerUser = async (userData: Record<string, unknown>) => {
         try {
-            const data = await register(userData);
-            setUser(data.user);
+            const { data } = await register(userData);
+            setUser(data!.user);
             setIsAuthenticated(true);
-            await Storage.set({ key: 'hasCompletedOnboarding', value: 'true' }); // Mark onboarding as complete
+            await Storage.set({ key: 'hasCompletedOnboarding', value: 'true' });
         } catch (error) {
-            console.error('Erreur lors de l\'inscription:', (error as Error).message);
+            console.error("Erreur lors de l'inscription:", (error as Error).message);
         }
     };
 
@@ -78,7 +78,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return (
         <AuthContext.Provider
-            value={{ user, isAuthenticated, loginUser, registerUser, logoutUser, hasCompletedOnboarding, setHasCompletedOnboarding }}
+            value={{
+                user,
+                isAuthenticated,
+                loginUser,
+                registerUser,
+                logoutUser,
+                hasCompletedOnboarding,
+                setHasCompletedOnboarding,
+            }}
         >
             {children}
         </AuthContext.Provider>
@@ -88,7 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
-        throw new Error('useAuth doit être utilisé à l\'intérieur de AuthProvider');
+        throw new Error("useAuth doit être utilisé à l'intérieur de AuthProvider");
     }
     return context;
 };
