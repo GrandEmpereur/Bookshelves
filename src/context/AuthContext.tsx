@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { login, register, logout, CurrentUser } from '@/services/authService';
+import { login, register, logout } from '@/services/authService';
+import { CurrentUser } from '@/services/usersServices';
 import { User } from '@/types/auth';
 import { Storage } from '@capacitor/storage';
 

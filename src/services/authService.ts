@@ -58,14 +58,4 @@ export const CurrentSession = async (): Promise<AuthResponse> => {
         handleApiError(error);
         return {} as AuthResponse;
     }
-}
-
-export const CurrentUser = async (): Promise<User> => {
-    try {
-        const response = await axios.get<User>(`${API_URL}/auth/session`, { withCredentials: true });
-        return response.data;
-    } catch (error) {
-        handleApiError(error);
-        return {} as User;
-    }
 };
