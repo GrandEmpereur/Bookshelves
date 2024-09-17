@@ -1,0 +1,5 @@
+{
+  "NSPrivacyAccessedAPICategoryUserDefaults": {
+    "usageReason": "CA92.1 - Access to user preferences and settings is required to provide a personalized experience."
+  }
+}

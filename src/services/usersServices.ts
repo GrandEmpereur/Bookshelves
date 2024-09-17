@@ -23,3 +23,13 @@ export const CurrentUser = async (): Promise<User> => {
         return {} as User;
     }
 };
+
+export const getUserById = async (userId: string): Promise<User> => {
+    try {
+        const response = await axios.get<User>(`${API_URL}/users/user/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch user by ID:', error);
+        throw new Error('Failed to fetch user data.');
+    }
+};
