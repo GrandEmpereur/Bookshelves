@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'bookish',
   webDir: 'out',
   "server": {
-    "url": process.env.NEXT_PUBLIC_SERVER_URL,
+    "url": process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000",
     "cleartext": true
   },
   plugins: {

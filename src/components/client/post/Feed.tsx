@@ -7,9 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { Heart, MessageSquare, Bookmark, BookmarkCheck } from "lucide-react";
 import { getPosts, toggleLike, toggleFavorite } from "@/services/postService";
 import { Post } from "@/types/post";
-import { formatDistanceToNow, parseISO, format } from "date-fns";
+//@ts-ignore
+import { DateTime } from "luxon";
 
-// Fonction pour générer une image aléatoire en fallback
+// Function to generate a random fallback image URL
 const getRandomImage = (width: number, height: number) =>
     `https://picsum.photos/${width}/${height}?random=${Math.floor(
         Math.random() * 1000
@@ -23,7 +24,7 @@ const Feed: React.FC = () => {
         getRandomImage(40, 40),
     ];
 
-    // Charger les posts à l'initialisation du composant
+    // Fetch posts data when the component mounts
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -37,7 +38,7 @@ const Feed: React.FC = () => {
         fetchPosts();
     }, []);
 
-    // Gérer le toggle du like avec animation
+    // Handle like toggle with animation
     const handleLikeToggle = async (postId: string) => {
         setPosts((prevPosts) =>
             prevPosts.map((post) =>
@@ -73,7 +74,7 @@ const Feed: React.FC = () => {
         }
     };
 
-    // Gérer le toggle des favoris avec animation
+    // Handle favorite toggle with animation
     const handleFavoriteToggle = async (postId: string) => {
         setPosts((prevPosts) =>
             prevPosts.map((post) =>
@@ -97,19 +98,26 @@ const Feed: React.FC = () => {
         }
     };
 
-    const formatDate = (date: string) => {
-        const postDate = parseISO(date);
-        const now = new Date();
-        const differenceInDays = Math.floor(
-            (now.getTime() - postDate.getTime()) / (1000 * 3600 * 24)
-        );
+    const formatTimestamp = (createdAt: string): string => {
+        const postDate = DateTime.fromISO(createdAt);
+        const now = DateTime.now();
+        const diffInSeconds = now.diff(postDate, "seconds").seconds;
 
-        if (differenceInDays < 1) {
-            return formatDistanceToNow(postDate, { addSuffix: true });
-        } else if (differenceInDays < 7) {
-            return `il y a ${differenceInDays}j`;
+        if (diffInSeconds < 60) {
+            // Less than 60 seconds
+            return `${Math.floor(diffInSeconds)}s`;
+        } else if (diffInSeconds < 3600) {
+            // Less than 60 minutes
+            return `${Math.floor(diffInSeconds / 60)}m`;
+        } else if (diffInSeconds < 86400) {
+            // Less than 24 hours
+            return `${Math.floor(diffInSeconds / 3600)}h`;
+        } else if (diffInSeconds < 604800) {
+            // Less than 7 days
+            return `il y a ${Math.floor(diffInSeconds / 86400)}j`;
         } else {
-            return format(postDate, "dd/MM/yyyy");
+            // More than 7 days, show as a formatted date
+            return postDate.toFormat("dd/MM/yyyy");
         }
     };
 
@@ -132,7 +140,7 @@ const Feed: React.FC = () => {
                             <div className="flex items-center gap-x-2">
                                 <span className="font-bold">{post.user.username || "User"}</span>
                                 <span className="text-gray-500 text-sm mt-1">
-                                    {formatDate(post.createdAt)}
+                                    {formatTimestamp(post.createdAt)}
                                 </span>
                             </div>
                             <p className="text-sm text-gray-500">{post.title}</p>
@@ -180,54 +188,38 @@ const Feed: React.FC = () => {
 
                     {/* Post Footer */}
                     <div className="flex justify-between items-center">
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center">
                             <Button
                                 variant="icon"
-                                size="icon"
+                                size="sm"
                                 onClick={() => handleLikeToggle(post.id)}
                                 className="transition-all duration-300 ease-in-out transform sm:hover:scale-110"
                             >
                                 <Heart
-                                    className={`transition-all duration-300 ease-in-out ${post.isLiked ? "text-red-500" : "text-gray-500"
-                                        }`}
-                                    size={20}
+                                    className={`transition-all duration-300 ease-in-out ${post.isLiked ? "text-red-500" : "text-primary"}`}
                                     style={{
                                         fill: post.isLiked ? "red" : "transparent",
-                                        transform: "scale(1.2)",
                                     }}
                                 />
                                 <span className="text-sm ml-1 transition-all duration-300 ease-in-out">
                                     {post.likesCount}
                                 </span>
                             </Button>
-                            <Button variant="icon" size="icon">
-                                <MessageSquare className="text-primary" size={20} />
+                            <Button variant="icon" size="sm">
+                                <MessageSquare className="text-primary" />
                                 <span className="text-sm ml-1">{post.commentsCount}</span>
                             </Button>
                             <Button
                                 variant="icon"
-                                size="icon"
+                                size="sm"
                                 onClick={() => handleFavoriteToggle(post.id)}
-                                className="transition-all duration-300 ease-in-out transform sm:hover:scale-110"
                             >
-                                {post.isFavorited ? (
-                                    <BookmarkCheck
-                                        className=""
-                                        style={{
-                                            fill: "#ffbc6a",
-                                            stroke: "black",
-                                        }}
-                                        size={20}
-                                    />
-                                ) : (
-                                    <Bookmark
-                                        className="text-primary"
-                                        style={{
-                                            fill: "transparent",
-                                        }}
-                                        size={20}
-                                    />
-                                )}
+                                <Bookmark
+                                    className={`transition-all duration-300 ease-in-out text-primary `}
+                                    style={{
+                                        fill: post.isFavorited ? "#ffb86a" : "transparent",
+                                    }}
+                                />
                             </Button>
                         </div>
                     </div>
