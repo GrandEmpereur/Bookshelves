@@ -6,7 +6,6 @@ import { Favorite } from '@/types/favorite';
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
-console.log(API_URL);
 
 const handleApiError = (error: unknown): never => {
     if (axios.isAxiosError(error)) {
@@ -38,15 +37,22 @@ export const getPostById = async (id: string): Promise<Post | undefined> => {
     return undefined;
 };
 
-export const createPost = async (postData: Partial<Post>): Promise<Post | undefined> => {
+export const createPost = async (formData: FormData): Promise<Post | undefined> => {
     try {
-        const response = await axios.post<Post>(`${API_URL}/posts`, postData, { withCredentials: true });
+        const response = await axios.post<Post>(`${API_URL}/posts`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true, // Assurez-vous que les cookies sont envoyés si nécessaire
+        });
         return response.data;
     } catch (error) {
         handleApiError(error);
     }
     return undefined;
 };
+
+
 
 export const updatePost = async (id: string, postData: Partial<Post>): Promise<Post | undefined> => {
     try {

@@ -141,7 +141,7 @@
     Input,
     textarea,
     select {
-      font-size: 16px;
+      font-size: 16px !important;
       /* Ensure input fields are at least 16px on mobile to avoid iOS zoom */
     }
   }

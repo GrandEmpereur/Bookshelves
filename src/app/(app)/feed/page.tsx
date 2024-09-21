@@ -25,15 +25,6 @@ const FeedPage: React.FC = () => {
     fetchCurrentUser();
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      setUser(null);
-    } catch (error) {
-      console.error("Erreur lors de la déconnexion :", error);
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex flex-col gap-6 px-4">
@@ -51,9 +42,7 @@ const FeedPage: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-y-6 ">
-      {Array.from({ length: 10 }).map((_, index) => (
-        <Feed key={index} /> 
-      ))}
+        <Feed /> 
     </div>
   );
 };

@@ -127,7 +127,6 @@ const OnboardingSteps = ({
             const response = await login(email, password); // Use the captured password to log the user in
 
             if (response) {
-                console.log("User logged in successfully:", response);
                 onComplete();
             } else {
                 console.error("Login failed:", response);

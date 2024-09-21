@@ -11,29 +11,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { createPost } from "@/services/postService";
-import { Media } from "@/types/post";
 import { CurrentUser } from "@/services/usersServices";
-import { User } from "@/types/user";
 
 // Validation schema using zod
 const formSchema = z.object({
     title: z.string().min(1, "Le titre est requis."),
     subject: z.string().min(1, "Le sujet est requis."),
     content: z.string().min(1, "Le contenu est requis."),
-    media: z.any().optional(),
+    media: z.any().optional(), // Media is optional
 });
 
 const NewPost: React.FC = () => {
     const router = useRouter();
-    const [media, setMedia] = useState<File | null>(null);
-    const [user, setUser] = useState<any | null>(null); // State to hold the current user data
+    const [media, setMedia] = useState<File | null>(null); // To handle the uploaded file
+    const [user, setUser] = useState<any | null>(null); // Current user state
 
     // Fetch current user data when the component mounts
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const userData = await CurrentUser(); // Fetch current user data
-                console.log("User data:", userData);
                 setUser(userData);
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -57,54 +54,51 @@ const NewPost: React.FC = () => {
     // Handle form submission
     const handlePostSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            // Prepare media URL if available
-            const mediaUrl = media ? URL.createObjectURL(media) : "https://picsum.photos/600/400";
+            // Create a FormData object to send the file
+            const formData = new FormData();
 
-            // Prepare post data
-            const postData = {
-                title: values.title,
-                subject: values.subject,
-                content: values.content,
-                media: [
-                    {
-                        type: "image",
-                        url: mediaUrl,
-                        id: "",
-                        postId: "",
-                    } as Media,
-                ],
-            };
+            // Append text fields to the FormData
+            formData.append("title", values.title);
+            formData.append("subject", values.subject);
+            formData.append("content", values.content);
 
-            // Create the post
-            await createPost(postData);
+            // Append media file if it exists
+            if (media) {
+                formData.append("media", media); // Append 'media' file
+            }
 
-            // Redirect to the feed after successful post creation
+            // Send the form data through the post service
+            await createPost(formData);
+
+            // Redirect to the feed after post creation
             router.push("/feed");
         } catch (error) {
             console.error("Error creating post:", error);
-            alert("Erreur lors de la création du post.");
+            alert("Error creating the post.");
         }
     };
 
-    // Handle file input change
+    // Handle media input change
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
-            setMedia(event.target.files[0]);
+            setMedia(event.target.files[0]); // Set the selected media file
         }
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-white px-4 py-6">
-
+        <div className="min-h-screen flex flex-col">
             {/* User Info */}
             <div className="flex items-center mb-4">
                 <Avatar className="mr-4">
-                    <AvatarImage src={user?.data.profile_picture || "https://randomuser.me/api/portraits/men/32.jpg"} alt={user?.data.username || "User"} />
-                    <AvatarFallback>{user?.data.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+                    {user?.data.profile_picture ? (
+                        <AvatarImage src={user?.data.profile_picture} alt={user?.data.username || "User"} />
+                    ) : (
+                        <AvatarFallback>{user?.data.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+                    )}
                 </Avatar>
                 <div className="flex-1">
-                    <p className="font-bold">{user?.data.username || "Utilisateur"}</p>
-                    <span className="text-gray-500 text-sm">{user ? "En ligne" : "Déconnecté"}</span>
+                    <p className="font-bold">{user?.data.username || "User"}</p>
+                    <span className="text-gray-500 text-sm">{user ? "Online" : "Offline"}</span>
                 </div>
             </div>
 
@@ -116,9 +110,9 @@ const NewPost: React.FC = () => {
                         name="title"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Titre du post</FormLabel>
+                                <FormLabel>Title</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Titre du post" className="text-[16px]" {...field} />
+                                    <Input placeholder="Post title" className="text-[16px]" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -129,9 +123,9 @@ const NewPost: React.FC = () => {
                         name="subject"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Sujet du post</FormLabel>
+                                <FormLabel>Subject</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Sujet du post" className="text-[16px]" {...field} />
+                                    <Input placeholder="Post subject" className="text-[16px]" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -142,26 +136,27 @@ const NewPost: React.FC = () => {
                         name="content"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Contenu</FormLabel>
+                                <FormLabel>Content</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="Écrivez quelque chose..." className="text-[16px]" {...field} />
+                                    <Textarea placeholder="Write something..." className="text-[16px]" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <FormItem>
-                        <FormLabel>Ajouter une image</FormLabel>
-                        <FormControl>
+                        <FormLabel>Add Image or Video</FormLabel>
+                        <FormControl className="h-[50px]">
                             <Input
                                 type="file"
-                                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
+                                accept="image/*,video/*" // Allow image or video file
+                                className="file:mr-5 file:py-2 file:px-2 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white bg-white"
                                 onChange={handleFileChange}
                             />
                         </FormControl>
                     </FormItem>
                     <Button type="submit" className="w-full bg-primary text-primary-foreground py-3">
-                        Publier
+                        Publish
                     </Button>
                 </form>
             </Form>

@@ -11,6 +11,7 @@ import { Post } from "@/types/post";
 //@ts-ignore
 import { DateTime } from "luxon";
 import FloatingActionButton from "@/components/FloatingActionButton";
+import Image from "next/image"; // Import Next.js image component
 
 // Function to generate a random fallback image URL
 const getRandomImage = (width: number, height: number) =>
@@ -35,6 +36,7 @@ const Feed: React.FC = () => {
         const fetchPosts = async () => {
             try {
                 const response = await getPosts();
+                console.log(response.data);
                 // Sort posts by createdAt in descending order (most recent first)
                 const sortedPosts = response.data.sort(
                     (a: Post, b: Post) =>
@@ -140,13 +142,16 @@ const Feed: React.FC = () => {
                     {/* Post Header */}
                     <div className="flex items-center mb-4">
                         <Avatar className="mr-4">
-                            <AvatarImage
-                                src={post.user.profilePicture || getRandomImage(40, 40)}
-                                alt={post.user.username || "User Avatar"}
-                            />
-                            <AvatarFallback>
-                                {post.user.username.charAt(0).toUpperCase() || "U"}
-                            </AvatarFallback>
+                            {post.user.profilePicture ? (
+                                <AvatarImage
+                                    src={post.user.profilePicture}
+                                    alt={post.user.username || "User Avatar"}
+                                />
+                            ) : (
+                                <AvatarFallback>
+                                    {post.user.username?.charAt(0).toUpperCase() || "U"}
+                                </AvatarFallback>
+                            )}
                         </Avatar>
                         <div className="flex-1">
                             <div className="flex items-center gap-x-2">
@@ -157,38 +162,51 @@ const Feed: React.FC = () => {
                             </div>
                             <p className="text-sm text-gray-500">{post.title}</p>
                         </div>
-                        <div className="flex items-center -space-x-3">
-                            {avatars.slice(0, 3).map((src, index) => (
-                                <Avatar key={index} className="w-8 h-8 border-2 border-white">
-                                    <AvatarImage src={src} alt={`Avatar ${index + 1}`} />
-                                    <AvatarFallback>AV</AvatarFallback>
-                                </Avatar>
-                            ))}
-                            {avatars.length > 3 && (
-                                <Avatar className="w-8 h-8 border-2 border-white bg-gray-200 flex items-center justify-center text-xs font-bold">
-                                    +{avatars.length - 3}
-                                </Avatar>
-                            )}
-                        </div>
                     </div>
 
                     {/* Post Content */}
                     <div className="mb-4">
                         <p className="text-gray-800 mb-4 break-words">{post.content}</p>
                         {post.media && post.media.length > 0 ? (
-                            <div className="overflow-hidden rounded-md">
-                                <img
-                                    src={post.media[0].url}
-                                    alt="Post content"
-                                    className="object-cover w-full h-auto"
-                                />
+                            <div className="overflow-hidden rounded-md max-h-[250px]">
+                                {post.media[0].type === 'image' ? (
+                                    <Image
+                                        src={post.media[0].url}
+                                        alt="Post content"
+                                        className="object-cover w-full h-[250px]"
+                                        width={600}
+                                        height={400}
+                                        layout="responsive"
+                                        loading="lazy"
+                                        placeholder="blur"
+                                        blurDataURL={getRandomImage(600, 400)}
+                                    />
+                                ) : post.media[0].type === 'video' ? (
+                                    <video
+                                        controls
+                                        poster={getRandomImage(600, 400)}  // Use a random image as poster
+                                        className="object-cover w-full h-[250px]" // Object fit cover and max height
+                                        preload="metadata"
+                                        playsInline
+                                        muted
+                                    >
+                                        <source src={post.media[0].url} type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                ) : (
+                                    <p>Média non supporté</p>
+                                )}
                             </div>
                         ) : (
-                            <div className="overflow-hidden rounded-md">
-                                <img
+                            <div className="overflow-hidden rounded-md max-h-[250px]">
+                                <Image
                                     src={getRandomImage(600, 400)}
                                     alt="Post content"
-                                    className="object-cover w-full h-auto"
+                                    className="object-cover w-full h-[250px]"
+                                    width={600}
+                                    height={400}
+                                    layout="responsive"
+                                    loading="lazy"
                                 />
                             </div>
                         )}

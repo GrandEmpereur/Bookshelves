@@ -17,8 +17,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkStatus = async () => {
       const { value } = await Preferences.get({ key: 'hasCompletedOnboarding' });
-      console.log('hasCompletedOnboarding:', value);
-
+      
       if (value === 'true') {
         setRedirectPath(isAuthenticated ? '/feed' : '/auth/login');
       } else {
