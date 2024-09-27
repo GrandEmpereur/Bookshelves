@@ -1,5 +1,5 @@
 {
-    "/profile": {
+    "/profile/": {
         "showBackButton": true,
         "title": {
             "text": "Profile",
@@ -9,7 +9,7 @@
             "settings"
         ]
     },
-    "/profile/settings": {
+    "/profile/settings/": {
         "showBackButton": true,
         "title": {
             "text": "Settings",
@@ -19,7 +19,7 @@
             ""
         ]
     },
-    "/profile/settings/edit": {
+    "/profile/settings/edit/": {
         "showBackButton": true,
         "title": {
             "text": "Edit Profile",
@@ -29,7 +29,7 @@
             ""
         ]
     },
-    "/profile/settings/statistique": {
+    "/profile/settings/statistique/": {
         "showBackButton": true,
         "title": {
             "text": "Statistique",
@@ -39,7 +39,7 @@
             ""
         ]
     },
-    "/search": {
+    "/search/": {
         "showBackButton": true,
         "title": {
             "text": "Recherche",
@@ -49,7 +49,7 @@
             ""
         ]
     },
-    "/community": {
+    "/community/": {
         "showBackButton": true,
         "title": {
             "text": "Clubs",
@@ -59,7 +59,7 @@
             "search"
         ]
     },
-    "/lists": {
+    "/lists/": {
         "showBackButton": true,
         "title": {
             "text": "Libraire",
@@ -69,7 +69,7 @@
             "search"
         ]
     },
-    "/feed": {
+    "/feed/": {
         "showBackButton": false,
         "title": {
             "text": "",
@@ -90,7 +90,7 @@
             "Send"
         ]
     },
-    "/messages": {
+    "/messages/": {
         "showBackButton": true,
         "title": {
             "text": "Messages",
@@ -100,7 +100,7 @@
             ""
         ]
     },
-    "/notifications": {
+    "/notifications/": {
         "showBackButton": true,
         "title": {
             "text": "Notifications",

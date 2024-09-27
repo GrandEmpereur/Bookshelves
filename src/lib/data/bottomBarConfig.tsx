@@ -18,7 +18,7 @@ export interface BottomBarConfig {
 
 // Configuration pour chaque page, avec un objet qui mappe les chemins aux configurations
 export const bottomBarConfigs: Record<string, BottomBarConfig> = {
-    '/feed': {
+    '/feed/': {
         show: true,
         items: [
             { href: '/feed', icon: <House size={24} />, label: 'Accueil' },
@@ -33,7 +33,7 @@ export const bottomBarConfigs: Record<string, BottomBarConfig> = {
             { href: '/profile', icon: <User size={24} />, label: 'Profile' },
         ],
     },
-    '/profile': {
+    '/profile/': {
         show: true,
         items: [
             { href: '/feed', icon: <House size={24} />, label: 'Accueil' },
@@ -48,7 +48,7 @@ export const bottomBarConfigs: Record<string, BottomBarConfig> = {
             { href: '/profile', icon: <User size={24} />, label: 'Profile' },
         ],
     },
-    '/messages': {
+    '/messages/': {
         show: false,
         items: [],
     },

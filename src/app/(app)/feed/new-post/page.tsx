@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { createPost } from "@/services/postService";
-import { CurrentUser } from "@/services/usersServices";
+import { getCurrentUser } from "@/services/usersServices";
 
 // Validation schema using zod
 const formSchema = z.object({
@@ -30,7 +30,7 @@ const NewPost: React.FC = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const userData = await CurrentUser(); // Fetch current user data
+                const userData = await getCurrentUser(); // Fetch current user data
                 setUser(userData);
             } catch (error) {
                 console.error("Error fetching user data:", error);

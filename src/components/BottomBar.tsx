@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { bottomBarConfigs, BottomBarConfig, BottomBarItem } from '@lib/data/bottomBarConfig'; // Import des types
+import { bottomBarConfigs, BottomBarConfig, BottomBarItem } from '@lib/data/bottomBarConfig';
 
 const BottomBar: React.FC = () => {
   const pathname = usePathname();

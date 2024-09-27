@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { login, register, logout } from '@/services/authService';
-import { CurrentUser } from '@/services/usersServices';
+import { getCurrentUser } from '@/services/usersServices';
 import { User } from '@/types/auth';
 import { Storage } from '@capacitor/storage';
 
@@ -30,12 +30,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             try {
                 const { value } = await Storage.get({ key: 'hasCompletedOnboarding' });
                 setHasCompletedOnboarding(value === 'true');
-
-                const currentUser = await CurrentUser();
-                setUser(currentUser);
+                const currentUser = await getCurrentUser();
+                setUser(currentUser as User);
                 setIsAuthenticated(!!currentUser);
             } catch (error) {
-                console.error("Erreur lors de la vérification de l'utilisateur:", error);
+                console.error("Erreur lors de la vérification de l'utilisateur:", (error as Error).message);
             }
         };
 

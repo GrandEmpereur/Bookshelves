@@ -6,7 +6,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Heart, MessageSquare, Bookmark } from "lucide-react";
-import { getPosts, toggleLike, toggleFavorite } from "@/services/postService";
+import { getPosts, } from "@/services/postService";
+import { toggleLike } from "@/services/likeService";
+import { toggleFavorite } from "@/services/favoriteService";
 import { Post } from "@/types/post";
 //@ts-ignore
 import { DateTime } from "luxon";
@@ -96,9 +98,8 @@ const Feed: React.FC = () => {
                     : post
             )
         );
-
         try {
-            await toggleFavorite({ postId });
+            await toggleFavorite(postId);
         } catch (error) {
             console.error("Error toggling favorite:", error);
             setPosts((prevPosts) =>
@@ -141,9 +142,9 @@ const Feed: React.FC = () => {
                     {/* Post Header */}
                     <div className="flex items-center mb-4">
                         <Avatar className="mr-4">
-                            {post.user.profilePicture ? (
+                            {post.user.profile_picture ? (
                                 <AvatarImage
-                                    src={post.user.profilePicture}
+                                    src={post.user.profile_picture}
                                     alt={post.user.username || "User Avatar"}
                                 />
                             ) : (
@@ -231,7 +232,7 @@ const Feed: React.FC = () => {
                                     {post.likesCount}
                                 </span>
                             </Button>
-                            <Button variant="icon" size="sm">
+                            <Button variant="icon" size="sm" onClick={() => router.push(`/feed/${post.id}/comments`)} >
                                 <MessageSquare className="text-primary" />
                                 <span className="text-sm ml-1">{post.commentsCount}</span>
                             </Button>
