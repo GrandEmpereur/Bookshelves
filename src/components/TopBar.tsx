@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
-import { ChevronLeft, Bell, SendHorizontal, Settings, QrCode } from 'lucide-react';
+import { ChevronLeft, Bell, SendHorizontal, Settings, QrCode, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import topBarConfig from '@lib/data/topBarConfig.json'; // Assurez-vous que le chemin soit correct
+import topBarConfig from '@lib/data/topBarConfig.json';
 
 interface TitleConfig {
     text: string;
-    icon?: string; // Rend l'icône optionnelle
+    icon?: string;
 }
 
 interface TopBarConfig {
@@ -22,45 +22,50 @@ const TopBar: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname();
 
-    // Charger la configuration de la route actuelle ou une configuration par défaut
+    // Load the configuration for the current route or use a default config
     const config: TopBarConfig = topBarConfig[pathname as keyof typeof topBarConfig] || {
         showBackButton: false,
         title: { text: '', icon: '' },
         rightIcons: []
     };
 
-    // Rendu dynamique des icônes à droite
+    // Map icons to JSX components
+    const iconMap: { [key: string]: JSX.Element } = {
+        notifications: (
+            <Link href="/notifications" key="notifications">
+                <Button size="icon" variant="icon">
+                    <Bell size={20} stroke="#2f5046" />
+                </Button>
+            </Link>
+        ),
+        messages: (
+            <Link href="/messages" key="messages">
+                <Button size="icon" variant="icon">
+                    <SendHorizontal size={20} stroke="#2f5046" />
+                </Button>
+            </Link>
+        ),
+        settings: (
+            <Link href="/profile/settings" key="settings">
+                <Button size="icon" variant="icon">
+                    <Settings size={20} stroke="#2f5046" />
+                </Button>
+            </Link>
+        ),
+        search: (
+            <Link href="/search" key="search">
+                <Button size="icon" variant="icon">
+                    <Search size={20} stroke="#2f5046" />
+                </Button>
+            </Link>
+        ),
+    };
+
+    // Dynamically render right icons based on config
     const renderRightIcons = (): JSX.Element[] => {
-        return config.rightIcons.map((icon, index) => {
-            switch (icon) {
-                case 'notifications':
-                    return (
-                        <Link href="/notifications" key={index}>
-                            <Button size="icon" variant="icon">
-                                <Bell size={20} stroke="#2f5046" />
-                            </Button>
-                        </Link>
-                    );
-                case 'messages':
-                    return (
-                        <Link href="/messages" key={index}>
-                            <Button size="icon" variant="icon">
-                                <SendHorizontal size={20} stroke="#2f5046" />
-                            </Button>
-                        </Link>
-                    );
-                case 'settings':
-                    return (
-                        <Link href="/profile/settings" key={index}>
-                            <Button size="icon" variant="icon">
-                                <Settings size={20} stroke="#2f5046" />
-                            </Button>
-                        </Link>
-                    );
-                default:
-                    return <></>;
-            }
-        });
+        return config.rightIcons
+            .filter(icon => icon in iconMap)
+            .map(icon => iconMap[icon]);
     };
 
     return (
@@ -73,7 +78,7 @@ const TopBar: React.FC = () => {
                         </Button>
                     ) : (
                         <Link href="/feed">
-                            <Image src="/Bookish2.svg" alt="logo" width={24} height={24} />
+                            <Image src="/Bookish2.svg" alt="logo" width={24} height={24} style={{ width: "auto", height: "auto"  }} />
                         </Link>
                     )}
 
@@ -82,7 +87,9 @@ const TopBar: React.FC = () => {
                         <h1 className="text-lg font-heading">{config.title.text}</h1>
                     </div>
 
-                    <div className="flex gap-x-[5px]">{renderRightIcons()}</div>
+                    <div className="flex gap-x-[5px]">
+                        {renderRightIcons()}
+                    </div>
                 </div>
             </div>
         </div>

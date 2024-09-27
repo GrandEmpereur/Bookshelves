@@ -11,7 +11,7 @@ import { Post } from "@/types/post";
 //@ts-ignore
 import { DateTime } from "luxon";
 import FloatingActionButton from "@/components/FloatingActionButton";
-import Image from "next/image"; // Import Next.js image component
+import Image from "next/image";
 
 // Function to generate a random fallback image URL
 const getRandomImage = (width: number, height: number) =>
@@ -36,7 +36,6 @@ const Feed: React.FC = () => {
         const fetchPosts = async () => {
             try {
                 const response = await getPosts();
-                console.log(response.data);
                 // Sort posts by createdAt in descending order (most recent first)
                 const sortedPosts = response.data.sort(
                     (a: Post, b: Post) =>
