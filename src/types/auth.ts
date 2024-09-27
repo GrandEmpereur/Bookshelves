@@ -14,6 +14,14 @@ export interface User {
     updatedAt?: string;
 }
 
+export interface UserResponse {
+    status: string;
+    message?: string;
+    data?: {
+        user: User;
+    };
+}
+
 // Réponse pour l'authentification (login, register, etc.)
 export interface AuthResponse {
     status: string;

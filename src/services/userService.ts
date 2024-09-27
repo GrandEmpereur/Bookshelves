@@ -1,10 +1,10 @@
-import { User } from '@/types/user';
+import { User, UserResponse } from '@/types/user';
 import { apiClient, handleApiError } from './apiClient';
 
 export const getCurrentUser = async (): Promise<User> => {
     try {
-        const response = await apiClient.get<User>('/users/profile');
-        return response.data;
+        const response = await apiClient.get<UserResponse>('/users/profile');
+        return response.data.data[0];
     } catch (error) {
         handleApiError(error);
     }
