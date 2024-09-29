@@ -80,6 +80,17 @@
             "messages"
         ]
     },
+    "/feed/[id]/comments": {
+        "showBackButton": true,
+        "title": {
+            "text": "",
+            "icon": ""
+        },
+        "rightIcons": [
+            "notifications",
+            "messages"
+        ]
+    },
     "/feed/new-post": {
         "showBackButton": true,
         "title": {

@@ -12,6 +12,7 @@ export interface Post {
     };
     createdAt: string;
     title: string;
+    subject: string;
     content: string;
     isLiked: boolean;
     likesCount: number;
@@ -22,6 +23,10 @@ export interface Post {
     likes: Like[];
     favorites: Favorite[];
     media: Media[];
+}
+
+export interface PostResponse {
+    data: Post;
 }
 
 export interface PostsResponse {

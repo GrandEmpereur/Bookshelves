@@ -1,8 +1,7 @@
 import React from 'react';
-import { getPostById, getComments, getPosts } from '@/services/postService'; // Ajout de getPosts
+import { getPosts } from '@/services/postService'; // Ajout de getPosts
 import { Post } from '@/types/post';
-import { Comment } from '@/types/comment';
-import { notFound } from 'next/navigation';
+import CommentSection from '@/components/client/CommentSection';
 
 interface CommentsPageProps {
     params: {
@@ -13,34 +12,9 @@ interface CommentsPageProps {
 const CommentsPage: React.FC<CommentsPageProps> = async ({ params }) => {
     const id = params.id;
 
-    // Fetch post details
-    const post = await getPostById(id);
-    if (!post) {
-        return notFound(); // Return 404 if post not found
-    }
-
-    // Fetch comments for the post
-    const comments = await getComments(id);
-
     return (
         <div className="comments-page">
-            {/* Post Information */}
-            <h1>{post.title}</h1>
-            <p>{post.content}</p>
-
-            {/* Comments Section */}
-            <h2>Comments</h2>
-            {comments.length > 0 ? (
-                <ul>
-                    {comments.map((comment: Comment) => (
-                        <li key={comment.id}>
-                            <strong>{comment.user?.username}:</strong> {comment.content}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No comments yet.</p>
-            )}
+            <CommentSection postId={id} />
         </div>
     );
 };
@@ -52,8 +26,4 @@ export async function generateStaticParams() {
     }));
 }
 
-export default function Page({ params }: { params: { id: string } }) {
-    const { id } = params;
-    // Votre logique pour afficher les commentaires du post avec l'ID `id`
-    return <div>Commentaires pour le post {id}</div>;
-}
+export default CommentsPage;

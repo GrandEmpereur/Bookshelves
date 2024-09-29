@@ -1,7 +1,7 @@
 import { Post } from '@/types/post';
-import { Comment } from '@/types/comment';
 import { apiClient, handleApiError } from './apiClient';
 import { PostsResponse } from "@/types/post";
+import { PostResponse } from "@/types/post";
 
 export const getPosts = async (): Promise<PostsResponse> => {
     try {
@@ -13,24 +13,14 @@ export const getPosts = async (): Promise<PostsResponse> => {
     }
 };
 
-export const getPostById = async (id: string): Promise<Post> => {
+export const getPostById = async (postId: string): Promise<PostResponse> => {
     try {
-        const response = await apiClient.get<Post>(`/posts/${id}`);
+        const response = await apiClient.get<PostResponse>(`/posts/${postId}`);
         return response.data;
     } catch (error) {
         handleApiError(error);
     }
-    return {} as Post;
-};
-
-export const getComments = async (postId: string): Promise<Comment[]> => {
-    try {
-        const response = await apiClient.get<Comment[]>(`/posts/${postId}/comments`);
-        return response.data;
-    } catch (error) {
-        handleApiError(error);
-    }
-    return [];
+    return { data: {} as Post };
 };
 
 export const createPost = async (formData: FormData): Promise<Post> => {

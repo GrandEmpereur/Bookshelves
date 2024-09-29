@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Heart, MessageSquare, Bookmark } from "lucide-react";
 import { getPosts, } from "@/services/postService";
-import { toggleLike } from "@/services/likeService";
+import { togglePostLike } from "@/services/likeService";
 import { toggleFavorite } from "@/services/favoriteService";
 import { Post } from "@/types/post";
 //@ts-ignore
@@ -70,7 +70,7 @@ const Feed: React.FC = () => {
         );
 
         try {
-            await toggleLike(postId);
+            await togglePostLike(postId);
         } catch (error) {
             console.error("Error toggling like:", error);
             setPosts((prevPosts) =>

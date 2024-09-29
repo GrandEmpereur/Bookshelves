@@ -8,11 +8,17 @@ export interface Comment {
     userId: string;
     postId: string;
     parentCommentId: string | null;
-    likesCount: number;
-    user: User;
     post: Post;
-    replies: Comment[];
-    likes: Like[];
+    user: User;
     createdAt: string;
     updatedAt: string;
+    likesCount: number;
+    replies: Comment[];
+    repliesCount: number;
+    likes: any[];
+    isLiked: boolean; // Ajout de la propriété isLiked
+}
+
+export interface CommentsResponse {
+    data: Comment[];
 }

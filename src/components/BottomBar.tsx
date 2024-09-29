@@ -8,7 +8,7 @@ import { bottomBarConfigs, BottomBarConfig, BottomBarItem } from '@lib/data/bott
 
 const BottomBar: React.FC = () => {
   const pathname = usePathname();
-  const config: BottomBarConfig = bottomBarConfigs[pathname] || { show: true, items: [] };
+  const config: BottomBarConfig = bottomBarConfigs[pathname] || { show: false, items: [] };
 
   // Si la bottom bar ne doit pas être affichée sur cette page
   if (!config.show) return null;

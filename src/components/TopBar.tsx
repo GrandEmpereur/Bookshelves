@@ -18,18 +18,30 @@ interface TopBarConfig {
     rightIcons: string[];
 }
 
+// Fonction pour normaliser le chemin de la route
+const normalizePath = (path: string): string => {
+    const feedCommentsRegex = /^\/feed\/[^\/]+\/comments\/?$/;
+    if (feedCommentsRegex.test(path)) {
+        return '/feed/[id]/comments';
+    }
+    return path;
+};
+
 const TopBar: React.FC = () => {
     const router = useRouter();
     const pathname = usePathname();
 
-    // Load the configuration for the current route or use a default config
-    const config: TopBarConfig = topBarConfig[pathname as keyof typeof topBarConfig] || {
+    // Normaliser le chemin de la route
+    const normalizedPath = normalizePath(pathname);
+
+    // Charger la configuration pour la route actuelle ou utiliser une configuration par défaut
+    const config: TopBarConfig = topBarConfig[normalizedPath as keyof typeof topBarConfig] || {
         showBackButton: false,
         title: { text: '', icon: '' },
         rightIcons: []
     };
 
-    // Map icons to JSX components
+    // Mapper les icônes aux composants JSX
     const iconMap: { [key: string]: JSX.Element } = {
         notifications: (
             <Link href="/notifications" key="notifications">
@@ -61,7 +73,7 @@ const TopBar: React.FC = () => {
         ),
     };
 
-    // Dynamically render right icons based on config
+    // Rendre dynamiquement les icônes de droite en fonction de la configuration
     const renderRightIcons = (): JSX.Element[] => {
         return config.rightIcons
             .filter(icon => icon in iconMap)
