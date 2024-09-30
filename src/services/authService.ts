@@ -2,9 +2,9 @@ import { AuthResponse } from '@/types/auth';
 import { User } from '@/types/user';
 import { apiClient, handleApiError } from './apiClient';
 
-export const login = async (email: string, password: string): Promise<AuthResponse> => {
+export const login = async (email: string, password: string, remember_me: boolean): Promise<AuthResponse> => {
     try {
-        const response = await apiClient.post<AuthResponse>('/auth/login', { email, password });
+        const response = await apiClient.post<AuthResponse>('/auth/login', { email, password, remember_me });
         return response.data;
     } catch (error) {
         handleApiError(error);

@@ -8,14 +8,15 @@ import { cn } from "@/lib/utils"
 
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & { onCheckedChange?: (checked: boolean) => void }
+>(({ className, onCheckedChange, ...props }, ref) => (
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
       "peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
       className
     )}
+    onCheckedChange={onCheckedChange} // Ajout de onCheckedChange
     {...props}
   >
     <CheckboxPrimitive.Indicator
