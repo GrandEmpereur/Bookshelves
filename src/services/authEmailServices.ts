@@ -1,4 +1,4 @@
-import { AuthResponse } from '@/types/auth';
+import { AuthResponse, User } from '@/types/auth';
 import { apiClient, handleApiError } from './apiClient';
 
 export const EmailVerify = async (email: string, code: string): Promise<AuthResponse> => {
@@ -8,8 +8,12 @@ export const EmailVerify = async (email: string, code: string): Promise<AuthResp
     } catch (error) {
         handleApiError(error);
     }
-    return {} as AuthResponse;
-}
+    return {
+        status: 'error',
+        message: 'Verification failed',
+        data: { user: {} as User }
+    };
+};
 
 export const ResendVerificationEmail = async (email: string): Promise<AuthResponse> => {
     try {
@@ -28,8 +32,12 @@ export const ForgotPassword = async (email: string): Promise<AuthResponse> => {
     } catch (error) {
         handleApiError(error);
     }
-    return {} as AuthResponse;
-}
+    return {
+        status: 'error',
+        message: 'Could not send password reset email',
+        data: { user: {} as User }
+    };
+};
 
 export const PasswordVerify = async (email: string, otp: string): Promise<AuthResponse> => {
     try {

@@ -19,20 +19,50 @@
             ""
         ]
     },
-    "/profile/settings/edit/": {
+    "/profile/settings/bookmark/": {
         "showBackButton": true,
         "title": {
-            "text": "Edit Profile",
+            "text": "Vos Favorie & Vos like",
             "icon": ""
         },
         "rightIcons": [
             ""
         ]
     },
-    "/profile/settings/statistique/": {
+    "/profile/settings/help/": {
         "showBackButton": true,
         "title": {
-            "text": "Statistique",
+            "text": "Centre d'aide",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    },
+    "/profile/settings/policy/": {
+        "showBackButton": true,
+        "title": {
+            "text": "Nos politiques",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    },
+    "/profile/settings/profile/": {
+        "showBackButton": true,
+        "title": {
+            "text": "Modifier votre profile",
+            "icon": ""
+        },
+        "rightIcons": [
+            ""
+        ]
+    },
+    "/profile/settings/statistics/": {
+        "showBackButton": true,
+        "title": {
+            "text": "Vos statistique",
             "icon": ""
         },
         "rightIcons": [

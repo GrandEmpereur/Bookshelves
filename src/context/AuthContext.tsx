@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { login, register, logout } from '@/services/authService';
-import { getCurrentUser } from '@/services/usersServices';
+import { getCurrentUser } from '@/services/userService';
 import { User } from '@/types/auth';
 import { Storage } from '@capacitor/storage';
 
@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const { value } = await Storage.get({ key: 'hasCompletedOnboarding' });
                 setHasCompletedOnboarding(value === 'true');
                 const currentUser = await getCurrentUser();
-                setUser(currentUser as User);
+                setUser(currentUser.data);
                 setIsAuthenticated(!!currentUser);
             } catch (error) {
                 console.error("Erreur lors de la vérification de l'utilisateur:", (error as Error).message);
@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const loginUser = async (email: string, password: string) => {
         try {
-            const { data } = await login(email, password);
+            const { data } = await login(email, password );
             setUser(data!.user);
             setIsAuthenticated(true);
             await Storage.set({ key: 'hasCompletedOnboarding', value: 'true' });

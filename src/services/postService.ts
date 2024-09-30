@@ -9,8 +9,11 @@ export const getPosts = async (): Promise<PostsResponse> => {
         return response.data;
     } catch (error) {
         handleApiError(error);
-        return { data: [] };
     }
+    return {
+        status: 'error',
+        data: []
+    };
 };
 
 export const getPostById = async (postId: string): Promise<PostResponse> => {
@@ -20,7 +23,10 @@ export const getPostById = async (postId: string): Promise<PostResponse> => {
     } catch (error) {
         handleApiError(error);
     }
-    return { data: {} as Post };
+    return {
+        status: 'error',
+        data: {} as Post
+    };
 };
 
 export const createPost = async (formData: FormData): Promise<Post> => {

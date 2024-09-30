@@ -1,4 +1,3 @@
-import { User } from './user';
 import { Comment } from './comment';
 import { Like } from './like';
 import { Favorite } from './favorite';
@@ -26,9 +25,11 @@ export interface Post {
 }
 
 export interface PostResponse {
+    status: string;
     data: Post;
 }
 
 export interface PostsResponse {
+    status: string;
     data: Post[];
 }

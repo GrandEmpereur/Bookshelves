@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { createPost } from "@/services/postService";
-import { getCurrentUser } from "@/services/usersServices";
+import { getCurrentUser } from "@/services/userService";
 
 // Validation schema using zod
 const formSchema = z.object({

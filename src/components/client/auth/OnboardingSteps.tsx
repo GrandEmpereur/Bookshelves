@@ -124,7 +124,7 @@ const OnboardingSteps = ({
             );
             await UpdateUserPreferencesGenres(email, selectedPreferences.genres);
 
-            const response = await login(email, password); // Use the captured password to log the user in
+            const response = await login(email, password, false);
 
             if (response) {
                 onComplete();

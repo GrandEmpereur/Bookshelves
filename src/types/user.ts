@@ -1,13 +1,10 @@
-// types/user.ts
+import { Post } from './post';
+import { UserGenre } from './userGenre';
+import { UserPreference } from './userPreference';
 
-import { Post } from "./post";
-import { UserGenre } from "./userGenre";
-import { UserPreference } from "./userPreference";
-
-// Typage pour un utilisateur
 export interface User {
     id: string;
-    username: string | null;
+    username: string;
     email: string;
     birth_date: string;
     role: string;
@@ -19,13 +16,19 @@ export interface User {
     emailVerificationTokenExpiresAt: string | null;
     resetPasswordToken: string | null;
     resetPasswordTokenExpiresAt: string | null;
-    createdAt: string;
-    updatedAt: string | null;
-    posts: Post[];
-    preferences: UserPreference[];
-    genres: UserGenre[];
+    createdAt: string | undefined;
+    updatedAt: string | undefined;
+    posts?: Post[];
+    preferences?: UserPreference[];
+    genres?: UserGenre[];
 }
 
 export interface UserResponse {
+    status: string;
+    message?: string;
+    data: User;
+}
+
+export interface UsersResponse {
     data: User[];
 }
