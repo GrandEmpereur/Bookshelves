@@ -16,7 +16,6 @@ const SearchPage: React.FC = () => {
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [debouncedQuery, setDebouncedQuery] = useState<string>("");
 
-
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedQuery(query);
@@ -29,6 +28,9 @@ const SearchPage: React.FC = () => {
         if (debouncedQuery.length >= 2) {
             fetchResults(debouncedQuery);
             addSuggestion(debouncedQuery);
+        } else if (debouncedQuery === "") {
+            setUser(null);
+            setBooks([]);
         }
     }, [debouncedQuery]);
 
@@ -43,7 +45,6 @@ const SearchPage: React.FC = () => {
         setLoginError(null);
 
         try {
-
             const users = await searchUsers(searchValue);
             const foundUser = users.find((user) =>
                 user.username.toLowerCase().includes(searchValue.toLowerCase()) ||
@@ -54,12 +55,10 @@ const SearchPage: React.FC = () => {
                 setUser(foundUser);
                 console.log("Utilisateur trouvé:", foundUser);
 
-
                 if (foundUser.role === "AUTHOR") {
                     try {
                         const allBooks = await searchBooks();
                         console.log("Livres récupérés:", allBooks);
-
 
                         const filteredBooks = allBooks.filter((book) => {
                             return normalizeName(book.author) === normalizeName(foundUser.username);
@@ -73,10 +72,8 @@ const SearchPage: React.FC = () => {
                     }
                 }
             } else {
-
                 try {
                     const allBooks = await searchBooks();
-
 
                     const filteredBooks = allBooks.filter((book) => {
                         const matchesTitle = book.title.toLowerCase().includes(searchValue.toLowerCase());
@@ -99,7 +96,6 @@ const SearchPage: React.FC = () => {
         }
     };
 
-
     const normalizeName = (name: string) => {
         return name.trim().replace(/\s+/g, '').toLowerCase();
     };
@@ -114,13 +110,11 @@ const SearchPage: React.FC = () => {
         });
     };
 
-
     const removeSuggestion = (suggestionToRemove: string) => {
         setSuggestions((prevSuggestions) => {
             return prevSuggestions.filter((suggestion) => suggestion !== suggestionToRemove);
         });
     };
-
 
     const clearSuggestions = () => {
         setSuggestions([]);
@@ -146,24 +140,26 @@ const SearchPage: React.FC = () => {
                 )}
             </div>
             {loginError && <p className="text-error text-center">{loginError}</p>}
-               {suggestions.length > 0 && (
-                                       <div className="mt-6">
-                                           <h3 className="font-semibold">Suggestions :</h3>
-                                           <ul>
-                                               {suggestions.map((suggestion, index) => (
-                                                   <li key={index} className="py-2 flex justify-between items-center">
-                                                       <span>{suggestion}</span>
-                                                       <button
-                                                           onClick={() => removeSuggestion(suggestion)}
-                                                           className="text-red-500 ml-2"
-                                                       >
-                                                           &#10005; {/* Croissant pour supprimer */}
-                                                       </button>
-                                                   </li>
-                                               ))}
-                                           </ul>
-                                       </div>
-                                   )}
+            {/* Suggestions */}
+            {suggestions.length > 0 && query !== "" && (
+                <div className="mt-6">
+                    <h3 className="font-semibold">Suggestions :</h3>
+                    <ul>
+                        {suggestions.map((suggestion, index) => (
+                            <li key={index} className="py-2 flex justify-between items-center">
+                                <span>{suggestion}</span>
+                                <button
+                                    onClick={() => removeSuggestion(suggestion)}
+                                    className="text-red-500 ml-2"
+                                >
+                                    &#10005; {/* Croissant pour supprimer */}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
             {loading ? (
                 <div className="flex flex-col gap-6">
                     <Skeleton className="w-full h-10 mb-4 rounded" />
