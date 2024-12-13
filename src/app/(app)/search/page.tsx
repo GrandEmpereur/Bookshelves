@@ -235,4 +235,5 @@ const SearchPage: React.FC = () => {
         </div>
     );
 };
+
 export default SearchPage;
