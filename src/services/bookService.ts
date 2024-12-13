@@ -12,6 +12,3 @@ export const searchBooks = async (): Promise<Book[]> => {
     }
 };
 
-
-
-
